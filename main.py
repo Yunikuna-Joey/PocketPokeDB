@@ -1,5 +1,5 @@
 # Flask imports 
-from flask import Flask
+from flask import Flask, render_template
 
 # sqlalchemy wrapper imports 
 from sqlalchemy import create_engine
@@ -11,10 +11,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # helper file imports 
-from datamodel import initializeDatabse
+from datamodel import initializeDatabase
 
-
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates', static_folder='static')
 
 engine = create_engine('sqlite:///pokedb.db', echo=True)
 
@@ -22,4 +21,9 @@ engine = create_engine('sqlite:///pokedb.db', echo=True)
 Session = sessionmaker(bind=engine)
 databaseSession = Session()
 
-initializeDatabse(engine)
+initializeDatabase(engine)
+
+# Testing landing page route
+@app.route('/')
+def loadLandingPage(): 
+    return render_template('index.html')

@@ -13,7 +13,7 @@ class Card(Base):
     # foreign key linking to the CollectionSet table 
     collectionSetId = Column(Integer, ForeignKey('collection_set.setId'), nullable=False)
     rarity = Column(String(20))
-    coverArt = Column(Text)         # This will hold the url of the image associated with the pokemon
+    coverArt = Column(String(255))         # This will hold the url of the image associated with the pokemon
     
     hitPoints = Column(Integer)
     energyType = Column(String(50))
@@ -46,10 +46,10 @@ class CollectionSet(Base):
     setId = Column(Integer, primary_key=True)
     collectionName = Column(String(100), unique=True, nullable=False)      # This will be the name of the booster pack
     pokemonCover = Column(String(100))                                      # This will represent the pokemon on the cover of the booster pack [name]
-    coverArt = Column(Text)                                                # This will represent a url containing the image of the booster pack i guess 
+    coverArt = Column(String(255))                                           # This will represent a url containing the image of the booster pack i guess 
 
     # define a one-to-many relationship with the card class [progamatically establish a relationship]
     cards = relationship('Card', back_populates="collectionSet")
 
-def initializeDatabse(engine): 
+def initializeDatabase(engine): 
     Base.metadata.create_all(engine)
