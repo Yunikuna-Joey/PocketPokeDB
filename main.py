@@ -12,6 +12,7 @@ load_dotenv()
 
 # helper file imports 
 from datamodel import initializeDatabase
+from helper import populateCollectionSet
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
@@ -19,11 +20,17 @@ engine = create_engine('sqlite:///pokedb.db', echo=True)
 
 #* Will determine whether or not we actually need a session in real world application 
 Session = sessionmaker(bind=engine)
-databaseSession = Session()
+dbSession = Session()
 
 initializeDatabase(engine)
 
 # Testing landing page route
-@app.route('/')
-def loadLandingPage(): 
-    return render_template('index.html')
+# @app.route('/')
+# def loadLandingPage(): 
+#     return render_template('index.html')
+
+
+if __name__ == '__main__': 
+    populateCollectionSet('Sheet1.csv', dbSession)
+    print('Finished running the database stuff')
+    # app.run(port=5500)

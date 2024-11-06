@@ -44,7 +44,7 @@ class CollectionSet(Base):
     __tablename__ = 'collection_set'
 
     setId = Column(Integer, primary_key=True)
-    collectionName = Column(String(100), unique=True, nullable=False)      # This will be the name of the booster pack
+    collectionName = Column(String(100), nullable=False)                    # This will be the name of the booster pack [going to override 'unique=True' for now]
     pokemonCover = Column(String(100))                                      # This will represent the pokemon on the cover of the booster pack [name]
     coverArt = Column(String(255))                                           # This will represent a url containing the image of the booster pack i guess 
 
