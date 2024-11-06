@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 
 virtenv
+*.db
 
 # C extensions
 *.so
