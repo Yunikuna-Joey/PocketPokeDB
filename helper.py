@@ -36,7 +36,6 @@ def populateCardTable(fileName, databaseSession):
                 coverArt = row['coverArt'], 
                 hitPoints = row['hitPoints'], 
                 energyType = row['energyType'], 
-                holoRating = row['holoRating'], 
                 energyRequired = row['energyRequired'], 
                 ability = row['ability'], 
                 abilityDescription = row['abilityDescription'], 
