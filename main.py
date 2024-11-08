@@ -12,7 +12,7 @@ load_dotenv()
 
 # helper file imports 
 from datamodel import initializeDatabase
-from helper import populateCollectionSet
+from helper import populateCollectionSet, populateCardTable, dropAllTable
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
@@ -31,6 +31,10 @@ initializeDatabase(engine)
 
 
 if __name__ == '__main__': 
-    populateCollectionSet('Sheet1.csv', dbSession)
-    print('Finished running the database stuff')
+    # populateCollectionSet('Sheet1.csv', dbSession)
+    # populateCardTable('Sheet2.csv', dbSession)
+    populateCardTable('Sheet3.csv', dbSession)
+
+    # dropAllTable(dbSession)
+    
     # app.run(port=5500)

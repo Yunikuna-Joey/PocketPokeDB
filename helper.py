@@ -30,13 +30,13 @@ def populateCardTable(fileName, databaseSession):
             card = Card(
                 id = row['id'], 
                 cardDexId = row['cardDexId'], 
-                name = row['name'], 
+                name = row['name'],
                 collectionSetId = row['collectionSetId'], 
                 rarity = row['rarity'], 
                 coverArt = row['coverArt'], 
+                packPointValue = row['packPointValue'],
                 hitPoints = row['hitPoints'], 
                 energyType = row['energyType'], 
-                energyRequired = row['energyRequired'], 
                 ability = row['ability'], 
                 abilityDescription = row['abilityDescription'], 
                 attackName = row['attackName'], 
@@ -47,8 +47,13 @@ def populateCardTable(fileName, databaseSession):
                 attackDescription2 = row['attackDescription2'], 
                 weakness = row['weakness'],
                 retreatCost = row['retreatCost']
-            )        
+            )    
 
             databaseSession.add(card)
         
         databaseSession.commit()
+
+def dropAllTable(databaseSession): 
+    databaseSession.query(Card).delete()
+    databaseSession.commit()
+    print('Ran drop Card-table function.')
