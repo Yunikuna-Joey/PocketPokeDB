@@ -32,8 +32,8 @@ initializeDatabase(engine)
 
 if __name__ == '__main__': 
     # populateCollectionSet('Sheet1.csv', dbSession)
-    # populateCardTable('Sheet2.csv', dbSession)
-    populateCardTable('Sheet3.csv', dbSession)
+    populateCardTable('Sheet2.csv', dbSession)
+    # populateCardTable('Sheet3.csv', dbSession)
 
     # dropAllTable(dbSession)
     
