@@ -8,6 +8,7 @@ virtenv
 templates
 static
 *.csv
+react-app
 
 # C extensions
 *.so
