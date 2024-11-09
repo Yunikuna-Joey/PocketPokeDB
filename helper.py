@@ -2,6 +2,7 @@ import csv
 
 from datamodel import CollectionSet, Card
 
+# Function to fill in the collection table
 def populateCollectionSet(fileName, databaseSession): 
     with open(fileName, mode='r', encoding='utf-8') as file: 
         # transform the csv file into a readable format 
@@ -22,6 +23,7 @@ def populateCollectionSet(fileName, databaseSession):
         
         databaseSession.commit()
 
+# function to fill in the card table associated with different collections
 def populateCardTable(fileName, databaseSession): 
     with open(fileName, mode='r', encoding='utf-8') as file: 
         reader = csv.DictReader(file)
@@ -37,16 +39,16 @@ def populateCardTable(fileName, databaseSession):
                 packPointValue = row['packPointValue'],
                 hitPoints = row['hitPoints'], 
                 energyType = row['energyType'], 
-                ability = row['ability'], 
-                abilityDescription = row['abilityDescription'], 
-                attackName = row['attackName'], 
-                attackDamage = row['attackDamage'], 
-                attackDescription = row['attackDescription'], 
-                attackName2 = row['attackName2'], 
-                attackDamage2 = row['attackDamage2'], 
-                attackDescription2 = row['attackDescription2'], 
-                weakness = row['weakness'],
-                retreatCost = row['retreatCost']
+                ability = row['ability'] if row['ability'] else None, 
+                abilityDescription = row['abilityDescription'] if row['abilityDescription'] else None, 
+                attackName = row['attackName'] if row['attackName'] else None, 
+                attackDamage = row['attackDamage'] if row['attackDamage'] else None, 
+                attackDescription = row['attackDescription'] if row['attackDescription'] else None, 
+                attackName2 = row['attackName2'] if row['attackName2'] else None, 
+                attackDamage2 = row['attackDamage2'] if row['attackDamage2'] else None, 
+                attackDescription2 = row['attackDescription2'] if row['attackDescription2'] else None, 
+                weakness = row['weakness'] if row['weakness'] else None,
+                retreatCost = row['retreatCost'] if row['retreatCost'] else None
             )    
 
             databaseSession.add(card)
