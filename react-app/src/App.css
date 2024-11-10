@@ -1,0 +1,83 @@
+/* Applies to everything on the page */
+.App { 
+  display: flex;
+  font-family: sans-serif;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* This portion is over-writing the normal properties of the default body and html elements within the document */
+body, html { 
+  margin: 0;
+  padding: 0; 
+  box-sizing: border-box;
+  background-color: #B89E97;
+}
+
+/* This is going to be styling everything about the vertical Navigation bar */
+.sideMenu { 
+  height: 100vh; 
+  width: 250px;
+  position: fixed;
+  top: 0; 
+  left: 0;
+  /* This controls the background of the menu portion of the page */
+  background-color: #393E41; 
+  padding-top: 20px;
+}
+
+.sideMenu h2 { 
+  color: white; 
+  text-align: center;
+}
+
+.sideMenu ul { 
+  list-style-type: none; 
+  margin: 0;
+  padding: 0;
+  width: 250px;
+  text-decoration: none;
+}
+
+.sideMenu ul li a {
+  display: block;
+  color: white;
+  padding: 32px 16px;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden; 
+  transition: color 0.3s ease;
+}
+
+.sideMenu ul li a::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #77A0A9;  /* corresponds to the color of the hover */
+  transform: translateX(-100%);
+  transition: transform 0.4s ease; 
+  z-index: -1; 
+}
+
+.sideMenu ul li a:hover::before {
+  transform: translateX(0); 
+}
+
+.sideMenu ul li a:hover {
+  color: white; /* needed so that when the hover effect is active, the text color is still preserved */
+}
+
+
+/* Attempt to shift all of the main content into the middle of the browser or at least
+account for the space taken up by the side bar  */
+.content { 
+  /* This margin-left value should match the width value in our sideMenu class  */
+  margin-left: 250px;
+  padding: 20px;
+  background-color: #4C5357;
+  width: calc(100vw - 250px);
+  height: 100%;
+}
