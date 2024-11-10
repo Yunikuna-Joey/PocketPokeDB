@@ -47,6 +47,9 @@ if __name__ == '__main__':
     # populateCardTable('SheetMaster.csv', dbSession)
     # populateCardTable('Sheet3.csv', dbSession)
 
+    # populateCardTable("MasterSheet.csv", dbSession)
+    # populateCollectionSet("MasterSet.csv", dbSession)
+
     # dropAllTable(dbSession)
     
     app.run(port=5500, debug=True)
