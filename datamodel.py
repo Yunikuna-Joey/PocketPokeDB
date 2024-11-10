@@ -25,16 +25,16 @@ class Card(Base):
     abilityDescription = Column(String(100), nullable=True)
 
     # every pokemon is guaranteed to have one attack move
-    attackName = Column(String(100))
-    attackDamage = Column(Integer)
+    attackName = Column(String(100), nullable=True)
+    attackDamage = Column(Integer, nullable=True)
     attackDescription = Column(String(50), nullable=True)
     
     attackName2 = Column(String(100), nullable=True)
     attackDamage2 = Column(Integer, nullable=True)
     attackDescription2 = Column(String(50), nullable=True)
     
-    weakness = Column(String(100))
-    retreatCost = Column(Integer)
+    weakness = Column(String(100), nullable=True)
+    retreatCost = Column(Integer, nullable=True)
 
     # This is for programatically establishing the relationship
     collectionSet = relationship('CollectionSet', back_populates='cards')
