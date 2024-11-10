@@ -15,7 +15,7 @@ def populateCollectionSet(fileName, databaseSession):
                 setId = row['setId'],
                 collectionName = row['collectionName'], 
                 collectionId = row['collectionId'], 
-                pokemonCover = row['pokemonCover'], 
+                pokemonCover = row['pokemonCover'] if row['pokemonCover'] else None, 
                 coverArt = row['coverArt']
             )
 
