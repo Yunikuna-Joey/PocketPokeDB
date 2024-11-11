@@ -1,6 +1,7 @@
-from sqlalchemy import create_engine, Column, Integer, String, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+
 
 Base = declarative_base()
 
@@ -51,6 +52,16 @@ class CollectionSet(Base):
 
     # define a one-to-many relationship with the card class [progamatically establish a relationship]
     cards = relationship('Card', back_populates="collectionSet")
+
+class Event(Base): 
+    __tablename__ = 'event_list'
+
+    id = Column(Integer, primary_key=True)
+    eventCoverArt = Column(String(255))                                 # this is going to hold the url for the picture of the event
+    eventName = Column(Text)
+    eventDescription = Column(Text)
+    startTime = Column(DateTime(timezone=True), nullable=False)
+    endTime = Column(DateTime(timezone=True), nullable=False)
 
 def initializeDatabase(engine): 
     Base.metadata.create_all(engine)

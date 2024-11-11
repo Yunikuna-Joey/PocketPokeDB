@@ -13,7 +13,7 @@ load_dotenv()
 
 # helper file imports 
 from datamodel import initializeDatabase
-from helper import populateCollectionSet, populateCardTable, dropAllTable
+from helper import populateCollectionSet, populateCardTable, dropAllTable, populateEventTable
 
 # Configure our app values and where the app should be looking for different resources
 app = Flask(__name__, template_folder='templates', static_folder='static')
@@ -44,11 +44,8 @@ def loadLandingPage():
 
 if __name__ == '__main__': 
     # populateCollectionSet('Sheet1.csv', dbSession)
-    # populateCardTable('SheetMaster.csv', dbSession)
-    # populateCardTable('Sheet3.csv', dbSession)
-
-    # populateCardTable("MasterSheet.csv", dbSession)
-    # populateCollectionSet("MasterSet.csv", dbSession)
+    # populateCardTable('Sheet2.csv', dbSession)
+    # populateEventTable('Sheet3.csv', dbSession)
 
     # dropAllTable(dbSession)
     
