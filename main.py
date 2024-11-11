@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # helper file imports 
-from datamodel import initializeDatabase
+from datamodel import initializeDatabase, Event
 from helper import populateCollectionSet, populateCardTable, dropAllTable, populateEventTable
 
 # Configure our app values and where the app should be looking for different resources
@@ -33,13 +33,28 @@ initializeDatabase(engine)
 
 @app.route('/')
 def loadHomepage(): 
+    """
+    This will be a placeholder home page 
+    """
     return render_template('index.html')
 
 # Testing landing page route
 @app.route('/page')
 def loadLandingPage(): 
+    """
+    This endpoint will query the database for the current events list stored in the database and return in json format the necessary information 
+    """
+
+    #* Query the database for all of the events in the databse 
+    eventList = dbSession.query(Event).all()
+
+    #* Iterate through all of the queried events and perform the json format on each 
+    formatList = [event.formatJson() for event in eventList]
+
+    return jsonify(formatList)
+
     # testing the return of different events within a list
-    return {"events": ["Event1", "Event2", "Event3"]}
+    # return {"events": ["Event1", "Event2", "Event3"]}
 
 
 if __name__ == '__main__': 

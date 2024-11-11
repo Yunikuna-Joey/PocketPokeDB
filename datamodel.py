@@ -2,7 +2,6 @@ from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
-
 Base = declarative_base()
 
 # Define the 'Card' table
@@ -62,6 +61,21 @@ class Event(Base):
     eventDescription = Column(Text)
     startTime = Column(DateTime(timezone=True), nullable=False)
     endTime = Column(DateTime(timezone=True), nullable=False)
+ 
+    def formatJson(self):
+        """
+        Allows for converting all properties of the event object into json format 
+        """
+        #* May need to check for errors in the method .isoformat() as they are associated with datetime objects.
+        return { 
+            "id": self.id, 
+            "eventCoverArt": self.eventCoverArt, 
+            "eventName": self.eventName, 
+            "eventDescription": self.eventDescription, 
+            "startTIme": self.startTime.isoformat(), 
+            "endTime": self.endTime.isoformat()
+        }
+        
 
 def initializeDatabase(engine): 
     Base.metadata.create_all(engine)
