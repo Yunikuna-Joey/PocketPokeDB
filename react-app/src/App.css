@@ -11,7 +11,7 @@ body, html {
   margin: 0;
   padding: 0; 
   box-sizing: border-box;
-  background-color: #B89E97;
+  background-color: #4C5357;
 }
 
 /* This is going to be styling everything about the vertical Navigation bar */
@@ -71,11 +71,37 @@ body, html {
 }
 
 
+/* This is going to be for the event portion of the page */
+.event-card {
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  width: 550px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.event-card img { 
+  width: 100%; 
+  height: 250px; 
+  object-fit: cover; 
+  border-radius: 5px;
+  overflow: hidden;
+} 
+
+.event-metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 20px;
+}
+
+
 /* Attempt to shift all of the main content into the middle of the browser or at least
 account for the space taken up by the side bar  */
 .content { 
   /* This margin-left value should match the width value in our sideMenu class  */
-  margin-left: 250px;
+  margin-left: 350px;
   padding: 20px;
   background-color: #4C5357;
   width: calc(100vw - 250px);

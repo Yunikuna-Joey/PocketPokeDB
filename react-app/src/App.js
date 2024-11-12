@@ -12,23 +12,6 @@ function App() {
 
     const [data, setData] = useState([{}])
 
-    /* 
-        useEffect will happen when the component first renders,
-        so when the component initially renders, we make a fetch-api call to our back-end endpoint
-        gather all of the data returned from the back-end endpoint and return them back into the front-end
-    */ 
-   
-    // useEffect(() => { 
-    //     fetch('/page').then(
-    //         res => res.json()
-    //     ).then( 
-    //         data => { 
-    //             setData(data)
-    //             console.log(data)
-    //         }
-    //     )
-    // }, [])
-
     //* Only want this portion of changing the document title to trigger once on the initial page render
     useEffect(() => { 
         document.title = 'PocketPokemonDB';
