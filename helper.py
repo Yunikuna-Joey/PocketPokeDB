@@ -93,7 +93,17 @@ def processNaturalTime(timeString):
 
     return universalTimeObject
 
-def dropAllTable(databaseSession): 
+def dropCardTable(databaseSession): 
     databaseSession.query(Card).delete()
     databaseSession.commit()
     print('Ran drop Card-table function.')
+
+def dropEventTable(databaseSession): 
+    databaseSession.query(Event).delete()
+    databaseSession.commit()
+    print('Ran the drop Event-table function')
+
+def dropCollectionTable(databaseSession): 
+    databaseSession.query(CollectionSet).delete()
+    databaseSession.commit()
+    print("Ran the drop Collection-table function")
