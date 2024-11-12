@@ -72,7 +72,7 @@ class Event(Base):
             "eventCoverArt": self.eventCoverArt, 
             "eventName": self.eventName, 
             "eventDescription": self.eventDescription, 
-            "startTIme": self.startTime.isoformat(), 
+            "startTime": self.startTime.isoformat(), 
             "endTime": self.endTime.isoformat()
         }
         
