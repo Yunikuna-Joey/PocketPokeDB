@@ -89,6 +89,24 @@ body, html {
   overflow: hidden;
 } 
 
+.event-card p { 
+  margin: 4px 0;
+}
+
+.event-card h3 {
+  margin: 8px 0 0;
+}
+
+.event-duration { 
+  display: flex; 
+  gap: 5px;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-style: italic;
+  font-family: monospace;
+}
+
+/* This is where all the event cards will be held */
 .event-metadata {
   display: flex;
   flex-wrap: wrap;

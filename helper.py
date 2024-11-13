@@ -89,9 +89,10 @@ def processNaturalTime(timeString):
     pacificTimeObject = naiveTimeObject.replace(tzinfo=pacificTimezone)
 
     # convert from pacific to UTC [universal time]
-    universalTimeObject = pacificTimeObject.astimezone(ZoneInfo("UTC"))
+    # universalTimeObject = pacificTimeObject.astimezone(ZoneInfo("UTC"))
 
-    return universalTimeObject
+    # return universalTimeObject
+    return pacificTimeObject
 
 def dropCardTable(databaseSession): 
     databaseSession.query(Card).delete()

@@ -56,8 +56,6 @@ def loadLandingPage():
 
     return jsonify(formatList)
 
-    # testing the return of different events within a list
-    # return {"events": ["Event1", "Event2", "Event3"]}
 
 
 if __name__ == '__main__': 

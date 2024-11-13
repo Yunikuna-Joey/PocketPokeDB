@@ -1,19 +1,46 @@
 import React from 'react';
 
 const EventCard = ({ event }) => {
+
+    // Used to convert the time into PST/PDT respectively 
+    const formatTime = (time) => {
+        const localDate = new Date(time);
+        const options = {
+            timeZone: "America/Los_Angeles", 
+            month: "2-digit",    
+            day: "2-digit",      
+            year: "numeric",     
+            hour: "2-digit",     
+            minute: "2-digit",   
+            hour12: true,       
+        };
+
+        let formattedDateTime = localDate.toLocaleString("en-US", options);
+
+        const [datePart, timePart] = formattedDateTime.split(', ');
+        return `${datePart} at ${timePart}`;
+    };
+
+
+
     return (
         <div className="event-card"> 
             <img
-                // src={`${process.env.PUBLICURL}/assets/${event.eventCoverArt}`}
                 src={event.eventCoverArt}
                 alt={event.eventName}
                 className="event-image"
             />
 
             <h3>{event.eventName}</h3>
+
+            <div className="event-duration">
+                <p>{formatTime(event.startTime)}</p>
+                <p> - </p>
+                <p>{formatTime(event.endTime)}</p>
+            </div>
+            
             <p>{event.eventDescription}</p>
-            <p>Start: {new Date(event.startTime).toLocaleString()}</p>
-            <p>End: {new Date(event.endTime).toLocaleString()}</p>
+
         </div>
     )
 };
