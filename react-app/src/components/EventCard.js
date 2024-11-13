@@ -4,16 +4,21 @@ const EventCard = ({ event }) => {
     return (
         <div className="event-card"> 
             <img
-                // src={`${process.env.PUBLICURL}/assets/${event.eventCoverArt}`}
                 src={event.eventCoverArt}
                 alt={event.eventName}
                 className="event-image"
             />
 
             <h3>{event.eventName}</h3>
+
+            <div className="event-duration">
+                <p>{new Date(event.startTime).localDate.toLocaleString()}</p>
+                <p> - </p>
+                <p>{new Date(event.endTime).localDate.toLocaleString()}</p>
+            </div>
+            
             <p>{event.eventDescription}</p>
-            <p>Start: {new Date(event.startTime).toLocaleString()}</p>
-            <p>End: {new Date(event.endTime).toLocaleString()}</p>
+
         </div>
     )
 };
