@@ -103,6 +103,7 @@ body, html {
   margin-top: 0;
   margin-bottom: 15px;
   font-style: italic;
+  font-family: monospace;
 }
 
 /* This is where all the event cards will be held */
