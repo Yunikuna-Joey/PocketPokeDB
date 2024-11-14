@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react'
 import './App.css';
 import { Events } from './components/Events';
 import { Sidebar } from './components/Sidebar';
+import { CardPackInfo } from './components/CardPackInfo';
+import { Decks } from './components/Decks'
+
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 
 function App() { 
@@ -17,14 +21,24 @@ function App() {
         document.title = 'PocketPokemonDB';
     }, [])
 
-    return ( 
-        <div className="App"> 
-            <Sidebar/>
-            <div className="content">
-                <Events />
-            </div>
+    /* 
+        Wrap the entire main app in a Router tag to allow for link redirection 
+        Wrap Routes as parent container with Route as child containers in order to declare url paths for different React components 
+    */
 
-        </div>
+    return ( 
+        <Router>
+            <div className="App"> 
+                <Sidebar/>
+                <div className="content">
+                    <Routes>
+                        <Route path="/" element={<Events />} />
+                        <Route path="/cardpackinfo" element={<CardPackInfo />} />
+                        <Route path="/decks" element={<Decks />} />
+                    </Routes>
+                </div>
+            </div>
+        </Router>
     )
 }
 
