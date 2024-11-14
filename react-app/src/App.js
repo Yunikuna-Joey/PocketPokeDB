@@ -6,6 +6,7 @@ import { CardPackInfo } from './components/CardPackInfo';
 import { Decks } from './components/Decks'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { WonderEvent1 } from './components/CustomEventPages';
 
 
 function App() { 
@@ -33,6 +34,8 @@ function App() {
                         <Route path="/" element={<Events />} />
                         <Route path="/cardpackinfo" element={<CardPackInfo />} />
                         <Route path="/decks" element={<Decks />} />
+
+                        <Route path="/WonderEvent1" element={<WonderEvent1 />} />
                     </Routes>
                 </div>
             </div>

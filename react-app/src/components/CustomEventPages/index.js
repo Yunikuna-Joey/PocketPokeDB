@@ -1,0 +1,1 @@
+export { WonderEvent1 } from './WonderEvent1';
