@@ -71,6 +71,7 @@ body, html {
 }
 
 
+/* --------------------------------------------- */
 /* This is going to be for the event portion of the page */
 .event-card {
   background-color: #f8f9fa;
@@ -108,6 +109,56 @@ body, html {
 
 /* This is where all the event cards will be held */
 .event-metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 20px;
+}
+
+/* ------------------------------------------- */
+/* This is going to be for the booster pack card-tiles */
+.booster-pack-tile {
+  background-color: #fff;                   
+  border-radius: 8px;                      
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  overflow: hidden;                         
+  width: 200px;                             
+  height: auto;                            
+  margin: 10px;                            
+  text-align: center;                      
+  transition: transform 0.2s ease;          
+  cursor: pointer;                          
+  display: flex;                            
+  flex-direction: column;                   
+  justify-content: space-between;           
+  padding: 10px;                            
+}
+
+.booster-pack-tile:hover {
+  transform: translateY(-5px);              
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); 
+}
+
+.booster-pack-image {
+  width: 100%;                              
+  height: 225px;                            
+  object-fit: cover;                        
+  border-bottom: 1px solid #ddd;           
+  border-radius: 8px;                      
+}
+
+.booster-pack-tile h3 {
+  font-size: 1.3em;                        
+  color: #333;                            
+  margin: 10px 0 0;                        
+  padding: 0 10px;                         
+  flex-shrink: 0;                    
+  text-align: center;
+}
+
+/* ------------------------------------------------------ */
+/* This is going to be for the Card | Pack Info page */
+.booster-pack-metadata { 
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
