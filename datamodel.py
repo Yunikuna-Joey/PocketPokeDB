@@ -39,6 +39,21 @@ class Card(Base):
     # This is for programatically establishing the relationship
     collectionSet = relationship('CollectionSet', back_populates='cards')
 
+# These will be excluding the individual pokemon cover packs that a colletion can have 
+class FamilySet(Base): 
+    __tablename__ = 'family_set'
+
+    id = Column(Integer, primary_key=True)
+    collectionName = Column(String(100), nullable=False)
+    coverArt = Column(String(255))
+
+    def fSetFormatJson(self): 
+        return { 
+            "id": self.id, 
+            "collectionName": self.collectionName, 
+            "coverArt": self.coverArt
+        }
+
 # Define the 'CollectionSet' table
 class CollectionSet(Base):
     __tablename__ = 'collection_set'
@@ -52,7 +67,7 @@ class CollectionSet(Base):
     # define a one-to-many relationship with the card class [progamatically establish a relationship]
     cards = relationship('Card', back_populates="collectionSet")
 
-    def setFormatJson(self): 
+    def cSetFormatJson(self): 
         return { 
             "setId": self.setId, 
             "collectionName": self.collectionName, 
