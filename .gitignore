@@ -12,6 +12,7 @@ react-app/node_modules
 react-app/public
 react-app/package-lock.json
 react-app/package.json
+react-app/src/assets
 
 /node_modules
 /.pnp

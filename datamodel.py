@@ -2,7 +2,6 @@ from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
-
 Base = declarative_base()
 
 # Define the 'Card' table
@@ -53,6 +52,15 @@ class CollectionSet(Base):
     # define a one-to-many relationship with the card class [progamatically establish a relationship]
     cards = relationship('Card', back_populates="collectionSet")
 
+    def setFormatJson(self): 
+        return { 
+            "setId": self.setId, 
+            "collectionName": self.collectionName, 
+            "collectionId": self.collectionId, 
+            "pokemonCover": self.pokemonCover, 
+            "coverArt": self.coverArt
+        }
+
 class Event(Base): 
     __tablename__ = 'event_list'
 
@@ -62,6 +70,21 @@ class Event(Base):
     eventDescription = Column(Text)
     startTime = Column(DateTime(timezone=True), nullable=False)
     endTime = Column(DateTime(timezone=True), nullable=False)
+ 
+    def formatJson(self):
+        """
+        Allows for converting all properties of the event object into json format 
+        """
+        #* May need to check for errors in the method .isoformat() as they are associated with datetime objects.
+        return { 
+            "id": self.id, 
+            "eventCoverArt": self.eventCoverArt, 
+            "eventName": self.eventName, 
+            "eventDescription": self.eventDescription, 
+            "startTime": self.startTime.isoformat(), 
+            "endTime": self.endTime.isoformat()
+        }
+        
 
 def initializeDatabase(engine): 
     Base.metadata.create_all(engine)

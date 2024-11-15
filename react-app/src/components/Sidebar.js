@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 export const Sidebar = () => { 
     //* Previous implementation
@@ -8,9 +9,9 @@ export const Sidebar = () => {
             {/* Most likely insert an icon next to it to expand and collapse the menu */}
 
             <ul> 
-                <li><a href='#events'>Events</a></li>
-                <li><a href='#cards'>Cards | Pack Info</a></li>
-                <li><a href='#decks'>Decks</a></li>
+                <li><Link to="/">Events</Link></li>
+                <li><Link to="cardpackinfo">Cards | Pack Info</Link></li>
+                <li><Link to="decks">Decks</Link></li>
             </ul>
         </div>
     )
