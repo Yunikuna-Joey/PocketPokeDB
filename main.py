@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # helper file imports 
-from datamodel import initializeDatabase, Event
+from datamodel import initializeDatabase, Event, CollectionSet 
 from helper import dropEventTable, populateCollectionSet, populateCardTable, dropCardTable, populateEventTable
 
 # Configure our app values and where the app should be looking for different resources
@@ -38,8 +38,8 @@ def loadHomepage():
     """
     return render_template('index.html')
 
-# Testing landing page route
-@app.route('/page')
+# Testing landing page route [events tab]
+@app.route('/eventPage')
 def loadLandingPage(): 
     """
     This endpoint will query the database for the current events list stored in the database and return in json format the necessary information 
@@ -56,6 +56,20 @@ def loadLandingPage():
 
     return jsonify(formatList)
 
+#* This endpoint will be used to query booster pack information 
+@app.route('/packPage')
+def requestAllPackInfo(): 
+
+    #* Query the database for all of the booster packs in the db 
+    packList = dbSession.query(CollectionSet).all()
+
+    #* Iterate through all of the queried pack information and format into json object 
+    formatPackList = [pack.setFormatJson() for pack in packList]
+
+    for pack in formatPackList: 
+        pack['coverArt'] = url_for('static', filename=f'images/{pack["coverArt"]}')
+
+    return jsonify(formatPackList)
 
 
 if __name__ == '__main__': 

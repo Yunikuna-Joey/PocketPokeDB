@@ -1,5 +1,21 @@
+import { useState, useEffect } from 'react'
+import { CardPackTile } from './CardPackTile'
+
 export const CardPackInfo = () => { 
     // we will need to load in the pack [3]
+    const [packList, setPackList] = useState([])
+
+    //* Invokes a call to our back-end endpoint to gather the necessary information 
+    useEffect(() => { 
+        fetch('/packPage').then(
+            res => res.json()
+        ).then(
+            data => { 
+                setPackList(data)
+                console.log(data)
+            }
+        )
+    }, [])
 
     /* 
         Tentative Plan: 
@@ -17,8 +33,14 @@ export const CardPackInfo = () => {
     */ 
 
     return ( 
-        <div> 
-            <p> Hello World </p>
+        <div className="booster-pack-metadata"> 
+            {packList.length === 0 ? (
+                <p> Hello World </p>    
+            ) : ( 
+                packList.map((pack, i) => (
+                    <CardPackTile key={i} boosterPack={pack}/>
+                ))
+            )} 
         </div>
     )
 }
