@@ -52,6 +52,15 @@ class CollectionSet(Base):
     # define a one-to-many relationship with the card class [progamatically establish a relationship]
     cards = relationship('Card', back_populates="collectionSet")
 
+    def setFormatJson(self): 
+        return { 
+            "setId": self.setId, 
+            "collectionName": self.collectionName, 
+            "collectionId": self.collectionId, 
+            "pokemonCover": self.pokemonCover, 
+            "coverArt": self.coverArt
+        }
+
 class Event(Base): 
     __tablename__ = 'event_list'
 

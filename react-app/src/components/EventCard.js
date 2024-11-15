@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'
 
 const EventCard = ({ event }) => {
 
@@ -21,6 +22,17 @@ const EventCard = ({ event }) => {
         return `${datePart} at ${timePart}`;
     };
 
+    /* 
+        Used to mapping out the eventName to their url 
+        eventRoutes = { eventId : url path (only) }
+    */
+    const eventRoutes = { 
+        1: "/events/WonderEvent1", 
+        2: "/events/LaprasDropEvent", 
+        3: "/events/GAEmblemEvent1",
+        4: "/events/WonderEvent2",
+    }
+
 
 
     return (
@@ -31,7 +43,11 @@ const EventCard = ({ event }) => {
                 className="event-image"
             />
 
-            <h3>{event.eventName}</h3>
+            <h3> 
+                <Link to={eventRoutes[event.id]}>
+                    {event.eventName}
+                </Link> 
+            </h3>
 
             <div className="event-duration">
                 <p>{formatTime(event.startTime)}</p>

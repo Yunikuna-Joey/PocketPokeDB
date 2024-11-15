@@ -8,7 +8,7 @@ export const Events = () =>  {
 
     //* This will hit the back-end endpoint which will return the list of events into the array
     useEffect(() => { 
-        fetch('/page').then(
+        fetch('/eventPage').then(
             res => res.json()
         ).then( 
             data => { 
