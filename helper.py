@@ -16,6 +16,7 @@ def populateCollectionSet(fileName, databaseSession):
             collection = CollectionSet(
                 setId = row['setId'],
                 collectionName = row['collectionName'], 
+                familySetId = row['familySetId'],
                 collectionId = row['collectionId'], 
                 pokemonCover = row['pokemonCover'] if row['pokemonCover'] else None, 
                 coverArt = row['coverArt']
