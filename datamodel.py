@@ -47,6 +47,9 @@ class FamilySet(Base):
     collectionName = Column(String(100), nullable=False)
     coverArt = Column(String(255))
 
+    # Define a one-to-many relationship with collection
+    boosterPacks = relationship('CollectionSet', back_populates="baseSet")
+
     def fSetFormatJson(self): 
         return { 
             "id": self.id, 
@@ -60,17 +63,22 @@ class CollectionSet(Base):
 
     setId = Column(Integer, primary_key=True)
     collectionName = Column(String(100), nullable=False)                    # This will be the name of the booster pack [going to override 'unique=True' for now]
+    familySetId = Column(Integer, ForeignKey('family_set.id'), nullable=False)
     collectionId = Column(String(5))
     pokemonCover = Column(String(100))                                      # This will represent the pokemon on the cover of the booster pack [name]
     coverArt = Column(String(255))                                           # This will represent a url containing the image of the booster pack i guess 
 
     # define a one-to-many relationship with the card class [progamatically establish a relationship]
     cards = relationship('Card', back_populates="collectionSet")
+    
+    # define a one-to-many relationship with FamilySet 
+    baseSet = relationship('FamilySet', back_populates="boosterPacks")
 
     def cSetFormatJson(self): 
         return { 
             "setId": self.setId, 
             "collectionName": self.collectionName, 
+            "familySetId": self.familySetId,
             "collectionId": self.collectionId, 
             "pokemonCover": self.pokemonCover, 
             "coverArt": self.coverArt

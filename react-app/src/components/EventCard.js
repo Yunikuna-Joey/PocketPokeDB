@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom'
 
 const EventCard = ({ event }) => {
@@ -26,14 +25,12 @@ const EventCard = ({ event }) => {
         Used to mapping out the eventName to their url 
         eventRoutes = { eventId : url path (only) }
     */
-    const eventRoutes = { 
-        1: "/events/WonderEvent1", 
-        2: "/events/LaprasDropEvent", 
-        3: "/events/GAEmblemEvent1",
-        4: "/events/WonderEvent2",
-    }
-
-
+    // const eventRoutes = { 
+    //     1: "/events/WonderEvent1", 
+    //     2: "/events/LaprasDropEvent", 
+    //     3: "/events/GAEmblemEvent1",
+    //     4: "/events/WonderEvent2",
+    // }
 
     return (
         <div className="event-card"> 
@@ -44,7 +41,7 @@ const EventCard = ({ event }) => {
             />
 
             <h3> 
-                <Link to={eventRoutes[event.id]}>
+                <Link to={`/events/${event.eventName}`}>
                     {event.eventName}
                 </Link> 
             </h3>
