@@ -7,11 +7,8 @@ import { Decks } from './components/Decks'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// Different event components 
-import { WonderEvent1 } from './components/CustomEventPages';
-import { WonderEvent2 } from './components/CustomEventPages';
-import { LaprasDropEvent } from './components/CustomEventPages';
-import { GAEmblemEvent1 } from './components/CustomEventPages';
+import { CardDetails } from './components/CardDetails'
+import { EventDetails } from './components/EventDetails';
 
 
 function App() { 
@@ -38,13 +35,12 @@ function App() {
                     <Routes>
                         {/* With Routes, we are basically saying, at this URL Path, display some content (represented by 'element') */}
                         <Route path="/" element={<Events />} />
-                        <Route path="/cardpackinfo" element={<CardPackInfo />} />
-                        <Route path="/decks" element={<Decks />} />
+                        <Route path="/events/:eventName" element={<EventDetails />}></Route>
 
-                        <Route path="/events/WonderEvent1" element={<WonderEvent1 />} />
-                        <Route path="/events/WonderEvent2" element={<WonderEvent2 />} />
-                        <Route path="/events/GAEmblemEvent1" element={<GAEmblemEvent1 />} />
-                        <Route path="/events/LaprasDropEvent" element={<LaprasDropEvent />} />
+                        <Route path="/cardpackinfo" element={<CardPackInfo />} />
+                        <Route path="/cardpackinfo/:basePackName" element={<CardDetails />} />
+
+                        <Route path="/decks" element={<Decks />} />
 
                     </Routes>
                 </div>
