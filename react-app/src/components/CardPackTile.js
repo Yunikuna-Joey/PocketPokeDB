@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 
 export const CardPackTile = ({ boosterPack }) => { 
     // This individual component should have just the name of collection and picture of the collection 
@@ -11,7 +12,9 @@ export const CardPackTile = ({ boosterPack }) => {
             />
 
             <h3> 
-                <p>{boosterPack.collectionName}</p>
+                <Link to={`/cardpackinfo/${boosterPack.collectionName}/${boosterPack.id}`}>
+                    {boosterPack.collectionName}
+                </Link>
             </h3>
         </div>
     )

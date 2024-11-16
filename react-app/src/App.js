@@ -35,10 +35,10 @@ function App() {
                     <Routes>
                         {/* With Routes, we are basically saying, at this URL Path, display some content (represented by 'element') */}
                         <Route path="/" element={<Events />} />
-                        <Route path="/events/:eventName" element={<EventDetails />}></Route>
-
+                        <Route path="/events/:eventName" element={<EventDetails />} /> 
+                        
                         <Route path="/cardpackinfo" element={<CardPackInfo />} />
-                        <Route path="/cardpackinfo/:basePackName" element={<CardDetails />} />
+                        <Route path="/cardpackinfo/:basePackName/:basePackId" element={<CardDetails />} />
 
                         <Route path="/decks" element={<Decks />} />
 

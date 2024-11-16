@@ -73,13 +73,13 @@ def requestAllPackInfo():
 
 
 if __name__ == '__main__': 
-    populateCollectionSet('Sheet1.csv', dbSession)
-    populateCardTable('Sheet2.csv', dbSession)
-    populateEventTable('Sheet3.csv', dbSession)
-    populateFamilySetTable('Sheet4.csv', dbSession)
+    # populateCollectionSet('Sheet1.csv', dbSession)
+    # populateCardTable('Sheet2.csv', dbSession)
+    # populateEventTable('Sheet3.csv', dbSession)
+    # populateFamilySetTable('Sheet4.csv', dbSession)
 
     # dropAllTable(dbSession)
     # dropEventTable(dbSession)
     # populateEventTable('Sheet3.csv', dbSession)    
     
-    # app.run(port=5500, debug=True)
+    app.run(port=5500, debug=True)
