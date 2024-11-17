@@ -1,6 +1,6 @@
 import csv 
 
-from datamodel import CollectionSet, Card, Event
+from datamodel import CollectionSet, Card, Event, FamilySet
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -16,6 +16,7 @@ def populateCollectionSet(fileName, databaseSession):
             collection = CollectionSet(
                 setId = row['setId'],
                 collectionName = row['collectionName'], 
+                familySetId = row['familySetId'],
                 collectionId = row['collectionId'], 
                 pokemonCover = row['pokemonCover'] if row['pokemonCover'] else None, 
                 coverArt = row['coverArt']
@@ -72,6 +73,21 @@ def populateEventTable(fileName, databaseSession):
             )
 
             databaseSession.add(event)
+        
+        databaseSession.commit()
+
+def populateFamilySetTable(fileName, databaseSession): 
+    with open(fileName, mode="r", encoding="utf-8") as file: 
+        reader = csv.DictReader(file)
+
+        for row in reader: 
+            pack = FamilySet( 
+                id = row['id'], 
+                collectionName = row['collectionName'], 
+                coverArt = row['coverArt']
+            )
+
+            databaseSession.add(pack)
         
         databaseSession.commit()
 
