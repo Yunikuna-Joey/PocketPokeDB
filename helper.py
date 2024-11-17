@@ -124,3 +124,8 @@ def dropCollectionTable(databaseSession):
     databaseSession.query(CollectionSet).delete()
     databaseSession.commit()
     print("Ran the drop Collection-table function")
+
+def dropFamilySet(databaseSession): 
+    databaseSession.query(FamilySet).delete()
+    databaseSession.commit()
+    print("Ran the delete FamilySet table function")
