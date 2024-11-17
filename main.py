@@ -12,8 +12,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # helper file imports 
-from datamodel import initializeDatabase, Event, CollectionSet, FamilySet 
-from helper import dropCollectionTable, dropEventTable, populateCollectionSet, populateCardTable, dropCardTable, populateEventTable, populateFamilySetTable
+from datamodel import Card, initializeDatabase, Event, CollectionSet, FamilySet 
+from helper import dropCollectionTable, dropEventTable, dropFamilySet, populateCollectionSet, populateCardTable, dropCardTable, populateEventTable, populateFamilySetTable
 
 # Configure our app values and where the app should be looking for different resources
 app = Flask(__name__, template_folder='templates', static_folder='static')
@@ -71,6 +71,24 @@ def requestAllPackInfo():
 
     return jsonify(formatPackList)
 
+@app.route('/subpackinfo/<int:baseSetId>')
+def requestSubPackInfo(baseSetId): 
+    # Retrieve pagination parameters from URL
+    page = request.args.get('page', 1, type=int)
+    pageSize = request.args.get('page_size', 20, type=int)
+
+    # utilize the id to query the collectionSet table
+    basePokemonCoverPacks = dbSession.query(CollectionSet).filter(CollectionSet.familySetId == baseSetId).all()         # this variable holds the data rows/entries so we must format to utilize the bits and pieces
+
+    collectionSetIdList = [pack.setId for pack in basePokemonCoverPacks]                                                # creates a list that holds all of the pack ids for a specific base/family set
+
+    # allCards = dbSession.query(Card).filter(Card.collectionSetId.in_(collectionSetIdList)).all()                        # gathers all of the cards that match the boosterPackId into a list of Card Objects
+    allCards = dbSession.query(Card).filter(Card.collectionSetId.in_(collectionSetIdList)).offset((page - 1) * pageSize).limit(pageSize).all()
+
+    cardJsonData = [card.cardFormatJson() for card in allCards]                                                         # json data for all of the cards queried with the setId data
+
+    return jsonify(cardJsonData)
+
 
 if __name__ == '__main__': 
     # populateCollectionSet('Sheet1.csv', dbSession)
@@ -80,6 +98,6 @@ if __name__ == '__main__':
 
     # dropAllTable(dbSession)
     # dropEventTable(dbSession)
-    # populateEventTable('Sheet3.csv', dbSession)    
+    # populateEventTable('Sheet3.csv', dbSession)
     
     app.run(port=5500, debug=True)

@@ -39,6 +39,29 @@ class Card(Base):
     # This is for programatically establishing the relationship
     collectionSet = relationship('CollectionSet', back_populates='cards')
 
+    def cardFormatJson(self):
+        return { 
+            "id": self.id, 
+            "cardDexId": self.cardDexId, 
+            "name": self.name, 
+            "collectionSetId": self.collectionSetId, 
+            "rarity": self.rarity,
+            "coverArt": self.coverArt, 
+            "packPointValue": self.packPointValue, 
+            "hitPoints": self.hitPoints, 
+            "energyType": self.energyType, 
+            "ability": self.ability, 
+            "abilityDescription": self.abilityDescription,
+            "attackName": self.attackName, 
+            "attackDamage": self.attackDamage, 
+            "attackDescription": self.attackDescription,
+            "attackName2": self.attackName2, 
+            "attackDamage2": self.attackDamage2, 
+            "attackDescription2": self.attackDescription2, 
+            "weakness": self.weakness, 
+            "retreatCost": self.retreatCost
+        }
+
 # These will be excluding the individual pokemon cover packs that a colletion can have 
 class FamilySet(Base): 
     __tablename__ = 'family_set'
