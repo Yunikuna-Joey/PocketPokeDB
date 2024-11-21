@@ -242,6 +242,34 @@ body, html {
   margin-right: 8px;
 }
 
+.selected-bubbles { 
+  margin-top: 10px;
+  display: flex; 
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+.bubble { 
+  display: flex;
+  align-items: center;
+  padding: 6px 12px; 
+  background-color: #007bff;
+  color: white;
+  border-radius: 20px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.bubble .remove-button { 
+  margin-left: 8px; 
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
 /* Attempt to shift all of the main content into the middle of the browser or at least
 account for the space taken up by the side bar  */
 .content { 

@@ -55,6 +55,23 @@ export const CardDetails = () => {
         }, [contentAvailable]
     )
 
+    //* Everything below this will be utilized for creating the filter menu 
+    const optionList1 = ['1option1', '1option2', '1option3']
+    const optionList2 = ['2option1', '2option2', '2option3']
+    const [selectedOptions, setSelectedOptions] = useState([]);
+    
+    const handleOptionChange = (option, action) => {
+        if (action === 'add' && !selectedOptions.includes(option)) {
+            setSelectedOptions([...selectedOptions, option]);
+        } else if (action === 'remove') {
+            setSelectedOptions(selectedOptions.filter(item => item !== option));
+        }
+    };
+
+    const handleRemoveOption = (option) => {
+        setSelectedOptions(selectedOptions.filter(item => item !== option));
+    };
+
     // use the base pack id from the family set to query the booster packs which match the family set [collectionSet packs that match FamilySet id's]
     // useEffect(() => { 
     //     fetch(`/subpackinfo/${basePackId}`).then(
@@ -76,8 +93,32 @@ export const CardDetails = () => {
         <div className='parent-ctn'>
             <div className="search-and-filter">
                 <SearchBar /> 
-                <FilterMenu />  
-                <FilterMenu />                                                                
+                <FilterMenu 
+                    optionList={optionList1}
+                    selectedOptions={selectedOptions}
+                    // onOptionChange={handleAddOption}
+                    onOptionChange={handleOptionChange}
+                />  
+                <FilterMenu 
+                    optionList={optionList2}
+                    selectedOptions={selectedOptions}
+                    // onOptionChange={handleAddOption}
+                    onOptionChange={handleOptionChange}
+                />                                                                
+            </div>
+
+            <div className="selected-bubbles">
+                {selectedOptions.map((option, index) => (
+                    <div key={index} className="bubble"> 
+                        {option}
+                        <button
+                            className='remove-button'
+                            onClick={() => handleRemoveOption(option)}
+                        >
+                            &times;
+                        </button>
+                    </div>
+                ))}
             </div>
 
         </div>
