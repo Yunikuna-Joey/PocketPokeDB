@@ -12,6 +12,7 @@ body, html {
   padding: 0; 
   box-sizing: border-box;
   background-color: #4C5357;
+  overflow: hidden;
 }
 
 /* This is going to be styling everything about the vertical Navigation bar */
@@ -170,6 +171,7 @@ body, html {
 .search-form { 
   display: flex;
   align-items: center;
+  flex: 1;
   min-width: 500px;
 }
 
@@ -178,25 +180,21 @@ body, html {
   margin-right: 8px;
   border-radius: 20px; 
   border: 1px solid #ccc;
-  width: 70%;
+  width: 100%;
+  /* width: 70%; */
   font-size: 20px;            /* Controls the font size that user types in*/
 }
 
-.search-button { 
-  padding: 8px, 16px; 
-  border-radius: 4px;
-  background-color: #007BFF;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.search-button:hover {
-  background-color: #0056b3;
+.search-and-filter { 
+    display: flex;
+    align-items: center;  
+    width: 100%;
+    gap: 20px;
+    justify-content: flex-start;
 }
 
 /* ------------------------------------------ */
+/* Styling for the drop down menu*/
 .multi-select-dropdown {
   position: relative;
   display: inline-block;
