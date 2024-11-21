@@ -52,7 +52,7 @@ def loadLandingPage():
     formatList = [event.formatJson() for event in eventList]
 
     for event in formatList:
-        event['eventCoverArt'] = url_for('static', filename=f'images/{event["eventCoverArt"]}')
+        event['eventCoverArt'] = url_for('static', filename=f'images/events/{event["eventCoverArt"]}')
 
     return jsonify(formatList)
 
@@ -67,7 +67,7 @@ def requestAllPackInfo():
     formatPackList = [pack.fSetFormatJson() for pack in packList]
 
     for pack in formatPackList: 
-        pack['coverArt'] = url_for('static', filename=f'images/{pack["coverArt"]}')
+        pack['coverArt'] = url_for('static', filename=f'images/boosterpacks/{pack["coverArt"]}')
 
     return jsonify(formatPackList)
 
@@ -86,6 +86,9 @@ def requestSubPackInfo(baseSetId):
     allCards = dbSession.query(Card).filter(Card.collectionSetId.in_(collectionSetIdList)).offset((page - 1) * pageSize).limit(pageSize).all()
 
     cardJsonData = [card.cardFormatJson() for card in allCards]                                                         # json data for all of the cards queried with the setId data
+
+    for card in cardJsonData: 
+        card['coverArt'] = url_for('static', filename=f'images/cards/{card["coverArt"]}')
 
     return jsonify(cardJsonData)
 

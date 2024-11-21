@@ -12,7 +12,6 @@ body, html {
   padding: 0; 
   box-sizing: border-box;
   background-color: #4C5357;
-  overflow: hidden;
 }
 
 /* This is going to be styling everything about the vertical Navigation bar */
@@ -203,12 +202,13 @@ body, html {
 
 .dropdown-button {
   width: 100%;
-  padding: 10px;
+  padding: 12px 16px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 20px;
   background-color: #f9f9f9;
   cursor: pointer;
   text-align: left;
+  font-size: 15px;
 }
 
 .dropdown-menu {
@@ -219,7 +219,7 @@ body, html {
   max-height: 150px;
   overflow-y: auto;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 10px;
   background-color: white;
   z-index: 1;
   margin-top: 4px;
@@ -242,6 +242,7 @@ body, html {
   margin-right: 8px;
 }
 
+/* Filter bubble styling */
 .selected-bubbles { 
   margin-top: 10px;
   display: flex; 
@@ -268,6 +269,23 @@ body, html {
   color: white;
   font-size: 16px;
   cursor: pointer;
+}
+
+/* ---------------------------------------- */
+/* This will be responsible for all things cards */
+.card-container { 
+  display: flex; 
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.card-element { 
+  flex: 1 1 30%;
+}
+
+.card-image { 
+  width: 60%;
+  height: auto; 
 }
 
 /* Attempt to shift all of the main content into the middle of the browser or at least
