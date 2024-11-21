@@ -9,6 +9,7 @@ export const SearchBar = ({ onSearch }) => {
         setQuery(event.target.value)
     }
 
+    //* possible want this to be a automatic query search
     const handleFormSubmission = (event) => { 
         event.preventDefault();
         onSearch(query)
@@ -24,10 +25,6 @@ export const SearchBar = ({ onSearch }) => {
                 aria-label="Search"
                 className="search-input"
             />
-
-            <button type="submit" className="search-button">
-                Search
-            </button>
         </form>
     )
 }
