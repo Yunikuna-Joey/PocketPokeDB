@@ -165,6 +165,84 @@ body, html {
   padding: 20px;
 }
 
+/* -------------------------------------------------------- */
+/* Styling for the search bar */
+.search-form { 
+  display: flex;
+  align-items: center;
+  min-width: 500px;
+}
+
+.search-input { 
+  padding: 12px 16px;         /* Controls the overall size of the search bar */
+  margin-right: 8px;
+  border-radius: 20px; 
+  border: 1px solid #ccc;
+  width: 70%;
+  font-size: 20px;            /* Controls the font size that user types in*/
+}
+
+.search-button { 
+  padding: 8px, 16px; 
+  border-radius: 4px;
+  background-color: #007BFF;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+
+/* ------------------------------------------ */
+.multi-select-dropdown {
+  position: relative;
+  display: inline-block;
+  width: 250px;
+}
+
+.dropdown-button {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  text-align: left;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  z-index: 1;
+  margin-top: 4px;
+  padding: 0;
+  list-style: none;
+}
+
+.dropdown-option {
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.dropdown-option:hover {
+  background-color: #f0f0f0;
+}
+
+.dropdown-option input {
+  margin-right: 8px;
+}
 
 /* Attempt to shift all of the main content into the middle of the browser or at least
 account for the space taken up by the side bar  */

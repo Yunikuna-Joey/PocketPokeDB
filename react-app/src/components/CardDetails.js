@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams } from "react-router-dom";
 
+import { SearchBar } from './SearchBar';
+import { FilterMenu } from './FilterMenu';
+
 /* 
 Tentative plan: 
     The parameter for this component could be the baseSetid 
@@ -70,9 +73,12 @@ export const CardDetails = () => {
     // First step: probably start populating pack information here  [utilized the parameter in the url to convert from the boosterPackName into boosterPack.id] 
 
     return ( 
-        <div> 
-            This will act as the page that will display the collection set 
-            of the base set 
+        <div className='parent-ctn'>
+            <div className="search-and-filter">
+                <SearchBar /> 
+                <FilterMenu />                                                                  
+            </div>
+
         </div>
     )
 }
