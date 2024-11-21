@@ -76,7 +76,8 @@ export const CardDetails = () => {
         <div className='parent-ctn'>
             <div className="search-and-filter">
                 <SearchBar /> 
-                <FilterMenu />                                                                  
+                <FilterMenu />  
+                <FilterMenu />                                                                
             </div>
 
         </div>
