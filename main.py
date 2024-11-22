@@ -22,7 +22,7 @@ app = Flask(__name__, template_folder='templates', static_folder='static')
 # CORS(app)
 
 # database engine connecting to which file 
-engine = create_engine('sqlite:///pokedb.db', echo=True)    # echo = false will not display queries in the terminal
+engine = create_engine('sqlite:///pokedb.db', echo=False)    # echo = false will not display queries in the terminal
 
 #* Will determine whether or not we actually need a session in real world application 
 Session = sessionmaker(bind=engine)
@@ -92,6 +92,19 @@ def requestSubPackInfo(baseSetId):
 
     return jsonify(cardJsonData)
 
+@app.route('/populateOptionList1/<int:baseSetId>')
+def populateOptionList1(baseSetId):
+    try:  
+        # make a query to the CollectionSet table to gather all of the possible subpacks that can be filtered with
+        subCollectionPacks = dbSession.query(CollectionSet).filter(CollectionSet.familySetId == baseSetId).all()
+
+        pokemonCoverList = [pack.pokemonCover for pack in subCollectionPacks]
+
+        return jsonify(pokemonCoverList)
+
+    except Exception as e: 
+        print("Error on optionList1 endpoint {e}")
+
 
 if __name__ == '__main__': 
     # populateCollectionSet('Sheet1.csv', dbSession)
@@ -103,5 +116,10 @@ if __name__ == '__main__':
     # dropAllTable(dbSession)
     # dropEventTable(dbSession)
     # populateEventTable('Sheet3.csv', dbSession)
+
+    # packs = dbSession.query(CollectionSet).filter(CollectionSet.familySetId == 1).all()
+    # pokemonCoverList = [pack.pokemonCover for pack in packs] 
+    
+    # print(jsonify(pokemonCoverList))
     
     app.run(port=5500, debug=True)

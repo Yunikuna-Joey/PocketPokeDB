@@ -56,8 +56,36 @@ export const CardDetails = () => {
     )
 
     //* Everything below this will be utilized for creating the filter menu 
-    const optionList1 = ['1option1', '1option2', '1option3']
-    const optionList2 = ['2option1', '2option2', '2option3']
+    const [optionList1, setOptionList1] = useState([])
+
+    useEffect(() => {
+        const url = `/populateOptionList1/${basePackId}`;
+        console.log("Fetching from URL:", url);
+        
+        fetch(`populateOptionList1/${basePackId}`).then(
+            res => res.json()
+        ).then(
+            data => {
+                setOptionList1(data)
+                console.log("This is optionList1 data", data)
+            }
+        ).catch(error => console.error("Error fetching optionList1:", error));
+    }, [basePackId])
+
+    const optionList2 = ['Test', 'test']
+    // const [optionList2, setOptionList2] = useState([])
+    // useEffect(() => {
+    //     fetch(`populateOptionList2/${basePackId}`).then(
+    //         res => res.json()
+    //     ).then(
+    //         data => {
+    //             setOptionList2(data)
+    //             console.log("This is optionList2 data", data)
+    //         }
+    //     )
+    // }, [basePackId])
+
+
     const [selectedOptions, setSelectedOptions] = useState([]);
     
     const handleOptionChange = (option, action) => {
