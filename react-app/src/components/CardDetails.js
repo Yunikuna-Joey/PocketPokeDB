@@ -55,6 +55,23 @@ export const CardDetails = () => {
         }, [contentAvailable]
     )
 
+    //* Everything below this will be utilized for creating the filter menu 
+    const optionList1 = ['1option1', '1option2', '1option3']
+    const optionList2 = ['2option1', '2option2', '2option3']
+    const [selectedOptions, setSelectedOptions] = useState([]);
+    
+    const handleOptionChange = (option, action) => {
+        if (action === 'add' && !selectedOptions.includes(option)) {
+            setSelectedOptions([...selectedOptions, option]);
+        } else if (action === 'remove') {
+            setSelectedOptions(selectedOptions.filter(item => item !== option));
+        }
+    };
+
+    const handleRemoveOption = (option) => {
+        setSelectedOptions(selectedOptions.filter(item => item !== option));
+    };
+
     // use the base pack id from the family set to query the booster packs which match the family set [collectionSet packs that match FamilySet id's]
     // useEffect(() => { 
     //     fetch(`/subpackinfo/${basePackId}`).then(
@@ -70,14 +87,55 @@ export const CardDetails = () => {
         fetchCardData()
     }, [fetchCardData])
 
-    // First step: probably start populating pack information here  [utilized the parameter in the url to convert from the boosterPackName into boosterPack.id] 
-
     return ( 
         <div className='parent-ctn'>
             <div className="search-and-filter">
                 <SearchBar /> 
-                <FilterMenu />  
-                <FilterMenu />                                                                
+                <FilterMenu 
+                    optionList={optionList1}
+                    selectedOptions={selectedOptions}
+                    // onOptionChange={handleAddOption}
+                    onOptionChange={handleOptionChange}
+                />  
+                <FilterMenu 
+                    optionList={optionList2}
+                    selectedOptions={selectedOptions}
+                    // onOptionChange={handleAddOption}
+                    onOptionChange={handleOptionChange}
+                />                                                                
+            </div>
+
+            <div className="selected-bubbles">
+                {selectedOptions.map((option, index) => (
+                    <div key={index} className="bubble"> 
+                        {option}
+                        <button
+                            className='remove-button'
+                            onClick={() => handleRemoveOption(option)}
+                        >
+                            &times;
+                        </button>
+                    </div>
+                ))}
+            </div>
+
+            <div className="card-container">
+                {cardData.length > 0 ? (
+                    cardData.map((card, index) => (
+                        <div
+                            key={`${card.id}-${index}`}
+                            ref={index === cardData.length - 1 ? lastCardReference : null}  // Attach ref to the last card
+                            className="card-element"
+                        >
+                            <h3>{card.name}</h3>
+                            <img src={card.coverArt} className="card-image" alt={card.name} loading="lazy" />
+                            <p>Rarity: {card.rarity}</p>
+                            <p>Hit Points: {card.hitPoints}</p>
+                        </div>
+                    ))
+                ) : (
+                    <p>Loading...</p>
+                )}
             </div>
 
         </div>
