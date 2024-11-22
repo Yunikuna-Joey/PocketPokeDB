@@ -277,14 +277,15 @@ body, html {
   display: flex; 
   flex-wrap: wrap;
   gap: 10px;
+  justify-content: space-between;
 }
 
 .card-element { 
-  flex: 1 1 30%;
+  flex: 0 0 30%;
 }
 
 .card-image { 
-  width: 60%;
+  width: 70%;
   height: auto; 
 }
 

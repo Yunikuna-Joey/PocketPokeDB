@@ -95,6 +95,7 @@ def requestSubPackInfo(baseSetId):
 
 if __name__ == '__main__': 
     # populateCollectionSet('Sheet1.csv', dbSession)
+    # dropCardTable(dbSession)
     # populateCardTable('Sheet2.csv', dbSession)
     # populateEventTable('Sheet3.csv', dbSession)
     # populateFamilySetTable('Sheet4.csv', dbSession)
