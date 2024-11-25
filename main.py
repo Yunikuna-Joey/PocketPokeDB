@@ -4,7 +4,7 @@ from flask import Flask, render_template, jsonify, request, url_for
 
 # sqlalchemy wrapper imports 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, joinedload
 
 # utility imports 
 import os 
@@ -92,6 +92,7 @@ def requestSubPackInfo(baseSetId):
 
     return jsonify(cardJsonData)
 
+# This will provide the filters for determining cards from each pack
 @app.route('/populateOptionList1/<int:baseSetId>')
 def populateOptionList1(baseSetId):
     try:  
@@ -103,8 +104,28 @@ def populateOptionList1(baseSetId):
         return jsonify(pokemonCoverList)
 
     except Exception as e: 
-        print("Error on optionList1 endpoint {e}")
+        print(f"Error on optionList1 endpoint {e}")
 
+# This will provide the filters for the rarity of each card 
+@app.route('/populateOptionList2/<int:baseSetId>')
+def populateOptionList2(baseSetId): 
+    try: 
+        # make a query on collection set and gather the ids of collection set 
+        collectionSetList = dbSession.query(CollectionSet).filter(CollectionSet.familySetId == baseSetId).all()
+
+        # from the entries returned from the query above, extract the id's 
+        collectionSetIdList = [ subpack.setId for subpack in collectionSetList]
+
+        # make a query on the Card table to grab all of the unique rarities to be returned as options [returns a tuple]
+        rarityList = dbSession.query(Card.rarity).filter(Card.collectionSetId.in_(collectionSetIdList)).distinct().all()
+
+        # format the list to retrieve the first element from the tuple 
+        rarityList = [rarity[0] for rarity in rarityList]
+
+        return jsonify(rarityList)
+    
+    except Exception as e: 
+        print(f"Error on optionList2 endpoint: {e}")
 
 if __name__ == '__main__': 
     # populateCollectionSet('Sheet1.csv', dbSession)
