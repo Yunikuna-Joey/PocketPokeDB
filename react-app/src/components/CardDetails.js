@@ -61,8 +61,8 @@ export const CardDetails = () => {
     useEffect(() => {
         const url = `/populateOptionList1/${basePackId}`;
         console.log("Fetching from URL:", url);
-        
-        fetch(`populateOptionList1/${basePackId}`).then(
+
+        fetch(`/populateOptionList1/${basePackId}`).then(
             res => res.json()
         ).then(
             data => {
@@ -72,18 +72,17 @@ export const CardDetails = () => {
         ).catch(error => console.error("Error fetching optionList1:", error));
     }, [basePackId])
 
-    const optionList2 = ['Test', 'test']
-    // const [optionList2, setOptionList2] = useState([])
-    // useEffect(() => {
-    //     fetch(`populateOptionList2/${basePackId}`).then(
-    //         res => res.json()
-    //     ).then(
-    //         data => {
-    //             setOptionList2(data)
-    //             console.log("This is optionList2 data", data)
-    //         }
-    //     )
-    // }, [basePackId])
+    const [optionList2, setOptionList2] = useState([])
+    useEffect(() => {
+        fetch(`/populateOptionList2/${basePackId}`).then(
+            res => res.json()
+        ).then(
+            data => {
+                setOptionList2(data)
+                console.log("This is optionList2 data", data)
+            }
+        )
+    }, [basePackId])
 
 
     const [selectedOptions, setSelectedOptions] = useState([]);
