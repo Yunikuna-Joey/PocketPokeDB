@@ -57,7 +57,6 @@ export const CardDetails = () => {
 
     //* Everything below this will be utilized for creating the filter menu 
     const [optionList1, setOptionList1] = useState([])
-
     useEffect(() => {
         const url = `/populateOptionList1/${basePackId}`;
         console.log("Fetching from URL:", url);
@@ -99,16 +98,6 @@ export const CardDetails = () => {
         setSelectedOptions(selectedOptions.filter(item => item !== option));
     };
 
-    // use the base pack id from the family set to query the booster packs which match the family set [collectionSet packs that match FamilySet id's]
-    // useEffect(() => { 
-    //     fetch(`/subpackinfo/${basePackId}`).then(
-    //         res => res.json()
-    //     ).then(
-    //         data => { 
-    //             setCardData(data)
-    //         }
-    //     )
-    // })
     //* new implementation of above useEffect case [test]
     useEffect(() => {
         fetchCardData()
