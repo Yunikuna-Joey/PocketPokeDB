@@ -16,6 +16,9 @@ export const CardDetails = () => {
 
     //* cardData is used to hold all of the meta-data about the cards associated with a certain familySet
     const [cardData, setCardData] = useState([])
+    // const [filteredCardData, setFilteredCardData] = useState([])
+    const [selectedOptions1, setSelectedOptions1] = useState([]);
+    const [selectedOptions2, setSelectedOptions2] = useState([]);
 
     //* page will be utilized with infinite scrolling and lazy loading to provide automated loading experience for card data
     const [page, setPage] = useState(1)
@@ -55,14 +58,30 @@ export const CardDetails = () => {
         }, [contentAvailable]
     )
 
+    const fetchFilteredData = useCallback(async () => {
+        //***********************************************************************************
+        //* This function will hit the request filtered information and populate it into the cardData that was intiially declared 
+        //* Then we will test with the lastCardReference when we overwrite data
+        
+        try { 
+            const response = await fetch(`/requestFilteredInfo/${basePackId}?pokemonCover=${selectedOptions1}&rarity=${selectedOptions2}&page=${page}&page_size=${pageSize}`)
+            const data = await response.json()
+
+            setContentAvailable(data.length === pageSize)
+            setCardData(prevCards => [...prevCards, ...data])
+        }
+        catch(error) { 
+            console.error("[fetchFilteredData]- Error fetching filtered data: ", error)
+        }
+    }, [selectedOptions1, selectedOptions2, basePackId, page])
+
     //* Everything below this will be utilized for creating the filter menu 
     const [optionList1, setOptionList1] = useState([])
-
     useEffect(() => {
         const url = `/populateOptionList1/${basePackId}`;
         console.log("Fetching from URL:", url);
-        
-        fetch(`populateOptionList1/${basePackId}`).then(
+
+        fetch(`/populateOptionList1/${basePackId}`).then(
             res => res.json()
         ).then(
             data => {
@@ -72,74 +91,85 @@ export const CardDetails = () => {
         ).catch(error => console.error("Error fetching optionList1:", error));
     }, [basePackId])
 
-    const optionList2 = ['Test', 'test']
-    // const [optionList2, setOptionList2] = useState([])
-    // useEffect(() => {
-    //     fetch(`populateOptionList2/${basePackId}`).then(
-    //         res => res.json()
-    //     ).then(
-    //         data => {
-    //             setOptionList2(data)
-    //             console.log("This is optionList2 data", data)
-    //         }
-    //     )
-    // }, [basePackId])
-
-
-    const [selectedOptions, setSelectedOptions] = useState([]);
+    const [optionList2, setOptionList2] = useState([])
+    useEffect(() => {
+        fetch(`/populateOptionList2/${basePackId}`).then(
+            res => res.json()
+        ).then(
+            data => {
+                setOptionList2(data)
+                console.log("This is optionList2 data", data)
+            }
+        )
+    }, [basePackId])
     
-    const handleOptionChange = (option, action) => {
-        if (action === 'add' && !selectedOptions.includes(option)) {
-            setSelectedOptions([...selectedOptions, option]);
-        } else if (action === 'remove') {
-            setSelectedOptions(selectedOptions.filter(item => item !== option));
+    const handleOptionChange = (option, action, listId) => {
+        if (listId === 1) {
+            if (action === 'add' && !selectedOptions1.includes(option)) {
+                setSelectedOptions1([...selectedOptions1, option]);
+            } else if (action === 'remove') {
+                setSelectedOptions1(selectedOptions1.filter(item => item !== option));
+            }
+        }
+
+        // FilterMenu2
+        else if (listId === 2) {
+            if (action === 'add' && !selectedOptions2.includes(option)) {
+                setSelectedOptions2([...selectedOptions2, option]);
+            } else if (action === 'remove') {
+                setSelectedOptions2(selectedOptions2.filter(item => item !== option));
+            }
         }
     };
 
-    const handleRemoveOption = (option) => {
-        setSelectedOptions(selectedOptions.filter(item => item !== option));
-    };
-
-    // use the base pack id from the family set to query the booster packs which match the family set [collectionSet packs that match FamilySet id's]
-    // useEffect(() => { 
-    //     fetch(`/subpackinfo/${basePackId}`).then(
-    //         res => res.json()
-    //     ).then(
-    //         data => { 
-    //             setCardData(data)
-    //         }
-    //     )
-    // })
-    //* new implementation of above useEffect case [test]
+    // Initially loads the first 20 card data 
+    // useEffect(() => {
+    //     fetchCardData()
+    // }, [fetchCardData])
     useEffect(() => {
-        fetchCardData()
-    }, [fetchCardData])
+        if (selectedOptions1.length === 0 && selectedOptions2.length === 0) {
+            fetchCardData();
+        }
+    }, [selectedOptions1, selectedOptions2, fetchCardData]);
+
+    useEffect(() => {
+        fetchFilteredData()
+    }, [selectedOptions1, selectedOptions2, fetchFilteredData])
 
     return ( 
         <div className='parent-ctn'>
             <div className="search-and-filter">
                 <SearchBar /> 
-                <FilterMenu 
+                <FilterMenu
                     optionList={optionList1}
-                    selectedOptions={selectedOptions}
-                    // onOptionChange={handleAddOption}
-                    onOptionChange={handleOptionChange}
-                />  
-                <FilterMenu 
+                    selectedOptions={selectedOptions1}
+                    onOptionChange={(option, action) => handleOptionChange(option, action, 1)}
+                />
+                <FilterMenu
                     optionList={optionList2}
-                    selectedOptions={selectedOptions}
-                    // onOptionChange={handleAddOption}
-                    onOptionChange={handleOptionChange}
+                    selectedOptions={selectedOptions2}
+                    onOptionChange={(option, action) => handleOptionChange(option, action, 2)}
                 />                                                                
             </div>
 
             <div className="selected-bubbles">
-                {selectedOptions.map((option, index) => (
-                    <div key={index} className="bubble"> 
+                {selectedOptions1.map((option, index) => (
+                    <div key={`option2-${index}`} className="bubble">
                         {option}
                         <button
-                            className='remove-button'
-                            onClick={() => handleRemoveOption(option)}
+                            className="remove-button"
+                            onClick={() => handleOptionChange(option, 'remove', 1)}
+                        >
+                            &times;
+                        </button>
+                    </div>
+                ))}
+                {selectedOptions2.map((option, index) => (
+                    <div key={`option2-${index}`} className="bubble">
+                        {option}
+                        <button
+                            className="remove-button"
+                            onClick={() => handleOptionChange(option, 'remove', 2)}
                         >
                             &times;
                         </button>
