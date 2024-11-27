@@ -92,6 +92,36 @@ def requestSubPackInfo(baseSetId):
 
     return jsonify(cardJsonData)
 
+@app.route('/requestFilteredInfo/<int:baseSetId>')
+def requestFilteredInfo(baseSetId): 
+    page = request.args.get('page', 1, type=int)
+    pageSize = request.args.get('page_size', 20, type=int)
+
+    optionList1 = request.args.get('pokemonCover')
+    optionList2 = request.args.get('rarity')
+
+    # determine if we are working with multiple
+    if "," in optionList1: 
+        optionList1 = optionList1.split(',')
+    else: 
+        optionList1 = [optionList1]
+    #* Mewtwo
+    #* Mewtwo,Charizard
+    
+
+    print(f"This is the value of page {page}")
+    print(f"This is the value of pageSize {pageSize}")
+    print(f"This is the value of optionList1 {optionList1}")
+    print(f"This is the value of optionList2 {optionList2}")
+
+    #***********************************************************************
+    #* This endpoint will grab card data page by page
+    #* The filter options should be encapsulated in lists so that we can take advantage of the sql in_ method to grab the necessary data
+    #* look at optionList2 to determine how to create the connection from baseSetId --> Card collectionSetId
+    #* then from the above card entries, sort and return by the filter applied from the front-end 
+
+
+
 # This will provide the filters for determining cards from each pack
 @app.route('/populateOptionList1/<int:baseSetId>')
 def populateOptionList1(baseSetId):
