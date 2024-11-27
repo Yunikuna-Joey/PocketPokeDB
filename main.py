@@ -94,6 +94,11 @@ def requestSubPackInfo(baseSetId):
 
 @app.route('/requestFilteredInfo/<int:baseSetId>')
 def requestFilteredInfo(baseSetId): 
+    #***********************************************************************
+    #* This endpoint will grab card data page by page
+    #* The filter options should be encapsulated in lists so that we can take advantage of the sql in_ method to grab the necessary data
+    #* look at optionList2 to determine how to create the connection from baseSetId --> Card collectionSetId
+    #* then from the above card entries, sort and return by the filter applied from the front-end 
     page = request.args.get('page', 1, type=int)
     pageSize = request.args.get('page_size', 20, type=int)
 
@@ -103,23 +108,52 @@ def requestFilteredInfo(baseSetId):
     # determine if we are working with multiple
     if "," in optionList1: 
         optionList1 = optionList1.split(',')
+        collectionSetIdList = dbSession.query(CollectionSet.setId).filter(
+            CollectionSet.pokemonCover.in_(optionList1)
+        ).all()
+        collectionSetIdList = [ pack.setId for pack in collectionSetIdList ]
+
     else: 
         optionList1 = [optionList1]
-    #* Mewtwo
-    #* Mewtwo,Charizard
-    
+        collectionSetIdList = dbSession.query(CollectionSet.setId).filter(
+            CollectionSet.pokemonCover.in_(optionList1)
+        ).all()
+        collectionSetIdList = [ pack.setId for pack in collectionSetIdList ]
 
-    print(f"This is the value of page {page}")
-    print(f"This is the value of pageSize {pageSize}")
-    print(f"This is the value of optionList1 {optionList1}")
-    print(f"This is the value of optionList2 {optionList2}")
+    #* The case for multiple rarities chosen to filter
+    if "," in optionList2: 
+        optionList2 = optionList2.split(',')
+    #* The case for no filter chosen 
+    elif optionList2 == "": 
+        # make a query on collection set and gather the ids of collection set 
+        collectionSetList = dbSession.query(CollectionSet).filter(CollectionSet.familySetId == baseSetId).all()
 
-    #***********************************************************************
-    #* This endpoint will grab card data page by page
-    #* The filter options should be encapsulated in lists so that we can take advantage of the sql in_ method to grab the necessary data
-    #* look at optionList2 to determine how to create the connection from baseSetId --> Card collectionSetId
-    #* then from the above card entries, sort and return by the filter applied from the front-end 
+        # from the entries returned from the query above, extract the id's 
+        collectionSetIdList = [ subpack.setId for subpack in collectionSetList]
 
+        # make a query on the Card table to grab all of the unique rarities to be returned as options [returns a tuple]
+        rarityList = dbSession.query(Card.rarity).filter(Card.collectionSetId.in_(collectionSetIdList)).distinct().all()
+
+        # format the list to retrieve the first element from the tuple 
+        optionList2 = [rarity[0] for rarity in rarityList]
+    #* The case for only one option chosen
+    else: 
+        optionList2 = [optionList2]
+
+    # gathers all of the card data with the filters
+    query = dbSession.query(Card).filter(
+        Card.collectionSetId.in_(collectionSetIdList),
+        Card.rarity.in_(optionList2)
+    ).offset((page - 1) * pageSize).limit(pageSize).all()
+
+    # serialize before sending to the front-end 
+    cardJsonData = [ card.cardFormatJson() for card in query]
+
+    # replace with the file path for the images
+    for card in cardJsonData: 
+        card['coverArt'] = url_for('static', filename=f'images/cards/{card["coverArt"]}')
+
+    return jsonify(cardJsonData)
 
 
 # This will provide the filters for determining cards from each pack
@@ -172,5 +206,5 @@ if __name__ == '__main__':
     # pokemonCoverList = [pack.pokemonCover for pack in packs] 
     
     # print(jsonify(pokemonCoverList))
-    
+
     app.run(port=5500, debug=True)
