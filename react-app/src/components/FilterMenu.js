@@ -1,17 +1,19 @@
 import { useState } from 'react';
 
-export const FilterMenu = () => { 
-    const options = ['Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 5'];
-    const [selectedOptions, setSelectedOptions] = useState([]);
+export const FilterMenu = ({ optionList, selectedOptions, onOptionChange}) => { 
+    //* This will take in the filtering options based from the parent component 
+    const options = optionList
+    
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleDropdown = () => setIsOpen(!isOpen);
 
     const handleOptionClick = (option) => {
         if (selectedOptions.includes(option)) {
-            setSelectedOptions(selectedOptions.filter(item => item !== option));
-        } else {
-            setSelectedOptions([...selectedOptions, option]);
+            onOptionChange(option, 'remove')
+        }
+        else { 
+            onOptionChange(option, 'add')
         }
     };
 
@@ -37,21 +39,6 @@ export const FilterMenu = () => {
                         ))}
                     </ul>
                 )}
-            </div>
-
-            {/* Render selected options as bubbles */}
-            <div className="selected-bubbles">
-                {selectedOptions.map((option, index) => (
-                    <div key={index} className="bubble">
-                        {option}
-                        <button 
-                            className="remove-button" 
-                            onClick={() => setSelectedOptions(selectedOptions.filter(item => item !== option))}
-                        >
-                            &times;
-                        </button>
-                    </div>
-                ))}
             </div>
         </div>
     )
