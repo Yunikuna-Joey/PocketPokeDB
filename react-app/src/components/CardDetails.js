@@ -104,6 +104,7 @@ export const CardDetails = () => {
     }, [basePackId])
     
     const handleOptionChange = (option, action, listId) => {
+        // FilterMenu1
         if (listId === 1) {
             if (action === 'add' && !selectedOptions1.includes(option)) {
                 setSelectedOptions1([...selectedOptions1, option]);
@@ -122,19 +123,26 @@ export const CardDetails = () => {
         }
     };
 
+    // reset the card data when user applies a filter
+    useEffect(() => {
+        setCardData([]);
+        setPage(1)
+        setContentAvailable(true)
+    }, [selectedOptions1, selectedOptions2])
+
     // Initially loads the first 20 card data 
     // useEffect(() => {
     //     fetchCardData()
     // }, [fetchCardData])
-    useEffect(() => {
-        if (selectedOptions1.length === 0 && selectedOptions2.length === 0) {
-            fetchCardData();
-        }
-    }, [selectedOptions1, selectedOptions2, fetchCardData]);
 
     useEffect(() => {
-        fetchFilteredData()
-    }, [selectedOptions1, selectedOptions2, fetchFilteredData])
+        if (selectedOptions1.length > 0 || selectedOptions2.length > 0) {
+            fetchFilteredData()
+        }
+        else { 
+            fetchCardData();
+        }
+    }, [selectedOptions1, selectedOptions2, fetchCardData, fetchFilteredData]);
 
     return ( 
         <div className='parent-ctn'>
