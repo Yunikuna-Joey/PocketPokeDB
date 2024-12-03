@@ -112,6 +112,7 @@ def requestFilteredInfo(baseSetId):
             CollectionSet.pokemonCover.in_(optionList1)
         ).all()
         collectionSetIdList = [ pack.setId for pack in collectionSetIdList ]
+        optionList1 = collectionSetIdList
 
     else: 
         optionList1 = [optionList1]
@@ -119,10 +120,12 @@ def requestFilteredInfo(baseSetId):
             CollectionSet.pokemonCover.in_(optionList1)
         ).all()
         collectionSetIdList = [ pack.setId for pack in collectionSetIdList ]
+        optionList1 = collectionSetIdList
 
     #* The case for multiple rarities chosen to filter
     if "," in optionList2: 
         optionList2 = optionList2.split(',')
+
     #* The case for no filter chosen 
     elif optionList2 == "": 
         # make a query on collection set and gather the ids of collection set 
@@ -136,13 +139,14 @@ def requestFilteredInfo(baseSetId):
 
         # format the list to retrieve the first element from the tuple 
         optionList2 = [rarity[0] for rarity in rarityList]
+
     #* The case for only one option chosen
     else: 
         optionList2 = [optionList2]
 
     # gathers all of the card data with the filters
     query = dbSession.query(Card).filter(
-        Card.collectionSetId.in_(collectionSetIdList),
+        Card.collectionSetId.in_(optionList1),
         Card.rarity.in_(optionList2)
     ).offset((page - 1) * pageSize).limit(pageSize).all()
 
@@ -192,6 +196,7 @@ def populateOptionList2(baseSetId):
         print(f"Error on optionList2 endpoint: {e}")
 
 if __name__ == '__main__': 
+    # dropCollectionTable(dbSession)
     # populateCollectionSet('Sheet1.csv', dbSession)
     # dropCardTable(dbSession)
     # populateCardTable('Sheet2.csv', dbSession)
