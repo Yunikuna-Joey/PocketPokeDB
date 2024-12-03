@@ -52,7 +52,11 @@ export const CardDetails = () => {
 
             setContentAvailable(data.length === pageSize)
 
-            setCardData(prevCards => [...prevCards, ...data])
+            // setCardData(prevCards => [...prevCards, ...data])
+            setCardData((prevCards) => {
+                const newCards = data.filter((card) => !prevCards.some((prevCard) => prevCard.id === card.id));
+                return [...prevCards, ...newCards];
+            });
         }
         catch(error) { 
             console.error("[fetchCardDataJS]- Error fetching card data: ", error)
@@ -74,10 +78,6 @@ export const CardDetails = () => {
 
     //* Function to grab filtered data 
     const fetchFilteredData = useCallback(async () => {
-        //***********************************************************************************
-        //* This function will hit the request filtered information and populate it into the cardData that was intiially declared 
-        //* Then we will test with the lastCardReference when we overwrite data
-        
         try { 
             const response = await fetch(`/requestFilteredInfo/${basePackId}?pokemonCover=${selectedOptions1}&rarity=${selectedOptions2}&page=${page}&page_size=${pageSize}`)
             const data = await response.json()
@@ -140,9 +140,11 @@ export const CardDetails = () => {
 
     // reset the card data when user applies a filter
     useEffect(() => {
-        setCardData([]);
-        setPage(1)
-        setContentAvailable(true)
+        if (selectedOptions1.length > 0 || selectedOptions2.length > 0 || searchTerm) {
+            setCardData([]);
+            setPage(1)
+            setContentAvailable(true)
+        }
     }, [selectedOptions1, selectedOptions2, searchTerm])
 
     useEffect(() => {
