@@ -195,6 +195,26 @@ def populateOptionList2(baseSetId):
     except Exception as e: 
         print(f"Error on optionList2 endpoint: {e}")
 
+@app.route('/searchCardQuery/<int:baseSetId>')
+def requestCardSearchData(baseSetId): 
+    searchQuery = request.args.get('search', '').strip()
+
+    query = dbSession.query(Card).filter(
+        Card.name.ilike(f"%{searchQuery}%"), 
+        Card.collectionSetId.in_(
+            dbSession.query(CollectionSet.setId).filter(
+                CollectionSet.familySetId == baseSetId
+            )
+        )
+    ).all()
+
+    cardJsonData = [card.cardFormatJson() for card in query]
+
+    for card in cardJsonData: 
+        card['coverArt'] = url_for('static', filename=f'images/cards/{card["coverArt"]}')
+
+    return jsonify(cardJsonData)
+
 if __name__ == '__main__': 
     # dropCollectionTable(dbSession)
     # populateCollectionSet('Sheet1.csv', dbSession)

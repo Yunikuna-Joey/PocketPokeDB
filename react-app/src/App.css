@@ -282,6 +282,7 @@ body, html {
 
 .card-element { 
   flex: 0 0 30%;
+  margin: auto;
 }
 
 .card-image { 

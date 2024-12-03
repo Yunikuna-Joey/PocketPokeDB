@@ -4,19 +4,14 @@ import { useParams } from "react-router-dom";
 import { SearchBar } from './SearchBar';
 import { FilterMenu } from './FilterMenu';
 
-/* 
-Tentative plan: 
-    The parameter for this component could be the baseSetid 
-    The baseSetid then is used to hit another endpoint to gather all the cards with the same baseSetId in the back-end
-    Then we received JSON data for all the card data from this specific baseSet to display for the user on the front-end
-*/
 export const CardDetails = () => { 
-    // This will take in some pack, so we will need some kind of foreign key from the base set into the collection set 
+    //* This will take in some pack, so we will need some kind of foreign key from the base set into the collection set 
     const { basePackId } = useParams()
 
     //* cardData is used to hold all of the meta-data about the cards associated with a certain familySet
     const [cardData, setCardData] = useState([])
-    // const [filteredCardData, setFilteredCardData] = useState([])
+    
+    //* variables to hold the filters selected by the user 
     const [selectedOptions1, setSelectedOptions1] = useState([]);
     const [selectedOptions2, setSelectedOptions2] = useState([]);
 
@@ -28,7 +23,26 @@ export const CardDetails = () => {
     //* if there is more content available for loading, set the boolean to be true to indicate loading process
     const [contentAvailable, setContentAvailable] = useState(true)
 
+    //* Used to determine which is the last card value 
     const observer = useRef()
+
+    //* Hold the search term the user wants to use 
+    const [searchTerm, setSearchTerm] = useState("");
+    const fetchSearchData = useCallback(async () => { 
+        try { 
+            //* Do not need to implement page data as the scope is within a particular pack and very unlikely to be more than 5 copies of a certain card 
+            const response = await fetch(`/searchCardQuery/${basePackId}?search=${searchTerm}`)
+            const data = await response.json()
+
+            setContentAvailable(data.length > 0)
+            setCardData(data)
+        }
+
+        catch (error) { 
+            console.error("[fetchSearchData] - Error fetching search data: ", error)
+        }
+
+    }, [basePackId, searchTerm])
 
     //* function to fetch more data from the end point after the initial load
     const fetchCardData = useCallback(async () => {
@@ -58,6 +72,7 @@ export const CardDetails = () => {
         }, [contentAvailable]
     )
 
+    //* Function to grab filtered data 
     const fetchFilteredData = useCallback(async () => {
         //***********************************************************************************
         //* This function will hit the request filtered information and populate it into the cardData that was intiially declared 
@@ -128,26 +143,42 @@ export const CardDetails = () => {
         setCardData([]);
         setPage(1)
         setContentAvailable(true)
-    }, [selectedOptions1, selectedOptions2])
-
-    // Initially loads the first 20 card data 
-    // useEffect(() => {
-    //     fetchCardData()
-    // }, [fetchCardData])
+    }, [selectedOptions1, selectedOptions2, searchTerm])
 
     useEffect(() => {
+        // We invoke the filtered fetch function when there are filters applied 
         if (selectedOptions1.length > 0 || selectedOptions2.length > 0) {
             fetchFilteredData()
         }
+        // otherwise fetch normal function 
+        else if (searchTerm) { 
+            fetchSearchData()
+        }
+
         else { 
             fetchCardData();
         }
-    }, [selectedOptions1, selectedOptions2, fetchCardData, fetchFilteredData]);
+    }, [selectedOptions1, selectedOptions2, searchTerm, fetchSearchData, fetchCardData, fetchFilteredData]);
+
+
+    useEffect(() => { 
+        if (searchTerm) { 
+            setCardData([]);
+            setPage(1)
+            setContentAvailable(true)
+            fetchSearchData()
+        }
+    }, [searchTerm, fetchSearchData])
+
+    // passes the value into the search-term variable 
+    const handleSearch = (term) => {
+        setSearchTerm(term)
+    }
 
     return ( 
         <div className='parent-ctn'>
             <div className="search-and-filter">
-                <SearchBar /> 
+                <SearchBar onSearch={handleSearch} /> 
                 <FilterMenu
                     optionList={optionList1}
                     selectedOptions={selectedOptions1}
