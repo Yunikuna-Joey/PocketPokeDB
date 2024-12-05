@@ -114,6 +114,14 @@ def requestFilteredInfo(baseSetId):
         collectionSetIdList = [ pack.setId for pack in collectionSetIdList ]
         optionList1 = collectionSetIdList
 
+    elif optionList1 == "": 
+        # gather all of the id's that are in the family set  
+        collectionSetList = dbSession.query(CollectionSet).filter(CollectionSet.familySetId == baseSetId).all()
+
+        collectionSetIdList = [ subpack.setId for subpack in collectionSetList ]
+
+        optionList1 = collectionSetIdList
+
     else: 
         optionList1 = [optionList1]
         collectionSetIdList = dbSession.query(CollectionSet.setId).filter(

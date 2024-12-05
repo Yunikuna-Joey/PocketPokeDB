@@ -63,19 +63,6 @@ export const CardDetails = () => {
         }
     }, [basePackId, page])
 
-    //* Utilize IntersectionObserver to load more content when last element in DOM is visible
-    const lastCardReference = useCallback(
-        (node) => { 
-            if (observer.current) observer.current.disconnect();
-            observer.current = new IntersectionObserver((entries) => { 
-                if (entries[0].isIntersecting && contentAvailable) {
-                    setPage((prevPage) => prevPage + 1);
-                }
-            });
-            if (node) observer.current.observe(node)
-        }, [contentAvailable]
-    )
-
     //* Function to grab filtered data 
     const fetchFilteredData = useCallback(async () => {
         try { 
@@ -89,6 +76,19 @@ export const CardDetails = () => {
             console.error("[fetchFilteredData]- Error fetching filtered data: ", error)
         }
     }, [selectedOptions1, selectedOptions2, basePackId, page])
+
+    //* Utilize IntersectionObserver to load more content when last element in DOM is visible
+    const lastCardReference = useCallback(
+        (node) => { 
+            if (observer.current) observer.current.disconnect();
+            observer.current = new IntersectionObserver((entries) => { 
+                if (entries[0].isIntersecting && contentAvailable) {
+                    setPage((prevPage) => prevPage + 1);
+                }
+            });
+            if (node) observer.current.observe(node)
+        }, [contentAvailable]
+    )
 
     //* Everything below this will be utilized for creating the filter menu 
     const [optionList1, setOptionList1] = useState([])
