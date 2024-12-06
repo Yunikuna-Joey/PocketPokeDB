@@ -28,6 +28,29 @@ export const CardDetails = () => {
 
     //* Hold the search term the user wants to use 
     const [searchTerm, setSearchTerm] = useState("");
+
+    //* Hold the search results that will be displayed as the user types 
+    const [searchResults, setSearchResults] = useState([])
+    const [showSuggestions, setShowSuggestions] = useState(false)
+
+    const fetchSearchSuggestions = useCallback(async (term) => { 
+        if (term.trim() === "") { 
+            setSearchResults([])
+            setShowSuggestions(false)
+            return
+        }
+
+        try { 
+            const response = await fetch(`/searchSuggestions/${term}`)
+            const data = await response.json()
+            setSearchResults(data)
+            setShowSuggestions(true)
+        }
+        catch (error) { 
+            console.error("Error fetching search suggestions: ", error)
+        }
+    }, []) 
+
     const fetchSearchData = useCallback(async () => { 
         try { 
             //* Do not need to implement page data as the scope is within a particular pack and very unlikely to be more than 5 copies of a certain card 
