@@ -190,6 +190,7 @@ body, html {
     width: 100%;
     gap: 20px;
     justify-content: flex-start;
+    margin-left: -50px;
 }
 
 /* ------------------------------------------ */
@@ -282,6 +283,7 @@ body, html {
 
 .card-element { 
   flex: 0 0 30%;
+  margin: auto;
 }
 
 .card-image { 

@@ -19,11 +19,13 @@ export const FilterMenu = ({ optionList, selectedOptions, onOptionChange}) => {
 
     const isOptionSelected = (option) => selectedOptions.includes(option);
 
+    const buttonName = optionList.length === 8 ? 'Select Rarity' : 'Select Pack'
+
     return (
         <div className="filter-container">
             <div className="multi-select-dropdown">
                 <button onClick={toggleDropdown} className="dropdown-button">
-                    Select options
+                    {buttonName}
                 </button>
                 {isOpen && (
                     <ul className="dropdown-menu">
