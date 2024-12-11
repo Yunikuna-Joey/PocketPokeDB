@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useParams } from "react-router-dom";
 
 import { SearchBar } from './SearchBar';
@@ -33,7 +33,15 @@ export const CardDetails = () => {
     const [searchResults, setSearchResults] = useState([])
     const [showSuggestions, setShowSuggestions] = useState(false)
 
-    const fetchSearchSuggestions = useCallback(async (term) => { 
+    const debounce = (func, delay) => { 
+        let timer; 
+        return (...args) => { 
+            clearTimeout(timer);
+            timer = setTimeout(() => func(...args), delay);
+        };
+    }
+
+    const fetchSearchSuggestions = useCallback(async (term, basePackId) => { 
         if (term.trim() === "") { 
             setSearchResults([])
             setShowSuggestions(false)
@@ -41,7 +49,7 @@ export const CardDetails = () => {
         }
 
         try { 
-            const response = await fetch(`/searchSuggestions/${term}`)
+            const response = await fetch(`/searchSuggestions?term=${encodeURIComponent(term)}&baseSetId=${basePackId}`)
             const data = await response.json()
             setSearchResults(data)
             setShowSuggestions(true)
@@ -50,6 +58,11 @@ export const CardDetails = () => {
             console.error("Error fetching search suggestions: ", error)
         }
     }, []) 
+
+    const debouncedFetchSuggestions = useMemo( 
+        () => debounce(fetchSearchSuggestions, 300),
+        [fetchSearchSuggestions]
+    );
 
     const fetchSearchData = useCallback(async () => { 
         try { 
@@ -198,12 +211,32 @@ export const CardDetails = () => {
     // passes the value into the search-term variable 
     const handleSearch = (term) => {
         setSearchTerm(term)
+        debouncedFetchSuggestions(term)
     }
 
     return ( 
         <div className='parent-ctn'>
             <div className="search-and-filter">
                 <SearchBar onSearch={handleSearch} /> 
+
+                {showSuggestions && (
+                    <div className="search-suggestions">
+                        {searchResults.length > 0 ? (
+                            searchResults.map((result, index) => (
+                                <div
+                                    key={index}
+                                    className="suggestion-item"
+                                    // onClick={() => handleSuggestionClick(result)}
+                                >
+                                    {result}
+                                </div>
+                            ))
+                        ) : (
+                            <p className="no-suggestions"> No suggestions </p>
+                        )}
+                    </div>
+                )}
+
                 <FilterMenu
                     optionList={optionList1}
                     selectedOptions={selectedOptions1}

@@ -223,6 +223,29 @@ def requestCardSearchData(baseSetId):
 
     return jsonify(cardJsonData)
 
+@app.route('/searchSuggestions')
+def populateSearchSuggestions(): 
+    # determine what pack to look in 
+    term = request.args.get('term', "").strip()
+    baseSetId = request.args.get('baseSetId', "").strip()
+
+    results = [] 
+
+    basePokemonCoverPacks = dbSession.query(CollectionSet).filter(CollectionSet.familySetId == baseSetId).all()
+
+    collectionSetIdList = [pack.setId for pack in basePokemonCoverPacks]
+
+    # possibly sort the cards in alphabetical order, then compare against the first half
+        # if a match in the first half was found, move into the second half
+        # if none are found in the 
+    allCards = dbSession.query(Card).filter(Card.collectionSetId.in_(collectionSetIdList)).all()
+
+    cardNameList = [card.name for card in allCards]
+
+    results = [cardName for cardName in cardNameList if term.lower() in cardName.lower()]
+
+    return jsonify(results)
+
 if __name__ == '__main__': 
     # dropCollectionTable(dbSession)
     # populateCollectionSet('Sheet1.csv', dbSession)
