@@ -114,6 +114,14 @@ def requestFilteredInfo(baseSetId):
         collectionSetIdList = [ pack.setId for pack in collectionSetIdList ]
         optionList1 = collectionSetIdList
 
+    elif optionList1 == "": 
+        # gather all of the id's that are in the family set  
+        collectionSetList = dbSession.query(CollectionSet).filter(CollectionSet.familySetId == baseSetId).all()
+
+        collectionSetIdList = [ subpack.setId for subpack in collectionSetList ]
+
+        optionList1 = collectionSetIdList
+
     else: 
         optionList1 = [optionList1]
         collectionSetIdList = dbSession.query(CollectionSet.setId).filter(
@@ -194,6 +202,49 @@ def populateOptionList2(baseSetId):
     
     except Exception as e: 
         print(f"Error on optionList2 endpoint: {e}")
+
+@app.route('/searchCardQuery/<int:baseSetId>')
+def requestCardSearchData(baseSetId): 
+    searchQuery = request.args.get('search', '').strip()
+
+    query = dbSession.query(Card).filter(
+        Card.name.ilike(f"%{searchQuery}%"), 
+        Card.collectionSetId.in_(
+            dbSession.query(CollectionSet.setId).filter(
+                CollectionSet.familySetId == baseSetId
+            )
+        )
+    ).all()
+
+    cardJsonData = [card.cardFormatJson() for card in query]
+
+    for card in cardJsonData: 
+        card['coverArt'] = url_for('static', filename=f'images/cards/{card["coverArt"]}')
+
+    return jsonify(cardJsonData)
+
+@app.route('/searchSuggestions')
+def populateSearchSuggestions(): 
+    # determine what pack to look in 
+    term = request.args.get('term', "").strip()
+    baseSetId = request.args.get('baseSetId', "").strip()
+
+    results = [] 
+
+    basePokemonCoverPacks = dbSession.query(CollectionSet).filter(CollectionSet.familySetId == baseSetId).all()
+
+    collectionSetIdList = [pack.setId for pack in basePokemonCoverPacks]
+
+    # possibly sort the cards in alphabetical order, then compare against the first half
+        # if a match in the first half was found, move into the second half
+        # if none are found in the 
+    allCards = dbSession.query(Card).filter(Card.collectionSetId.in_(collectionSetIdList)).all()
+
+    cardNameList = [card.name for card in allCards]
+
+    results = [cardName for cardName in cardNameList if term.lower() in cardName.lower()]
+
+    return jsonify(results)
 
 if __name__ == '__main__': 
     # dropCollectionTable(dbSession)
