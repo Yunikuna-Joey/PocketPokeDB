@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams } from "react-router-dom";
 
 import { SearchBar } from './SearchBar';
@@ -28,41 +28,6 @@ export const CardDetails = () => {
 
     //* Hold the search term the user wants to use 
     const [searchTerm, setSearchTerm] = useState("");
-
-    //* Hold the search results that will be displayed as the user types 
-    const [searchResults, setSearchResults] = useState([])
-    const [showSuggestions, setShowSuggestions] = useState(false)
-
-    const debounce = (func, delay) => { 
-        let timer; 
-        return (...args) => { 
-            clearTimeout(timer);
-            timer = setTimeout(() => func(...args), delay);
-        };
-    }
-
-    const fetchSearchSuggestions = useCallback(async (term, basePackId) => { 
-        if (term.trim() === "") { 
-            setSearchResults([])
-            setShowSuggestions(false)
-            return
-        }
-
-        try { 
-            const response = await fetch(`/searchSuggestions?term=${encodeURIComponent(term)}&baseSetId=${basePackId}`)
-            const data = await response.json()
-            setSearchResults(data)
-            setShowSuggestions(true)
-        }
-        catch (error) { 
-            console.error("Error fetching search suggestions: ", error)
-        }
-    }, []) 
-
-    const debouncedFetchSuggestions = useMemo( 
-        () => debounce(fetchSearchSuggestions, 300),
-        [fetchSearchSuggestions]
-    );
 
     const fetchSearchData = useCallback(async () => { 
         try { 
@@ -154,12 +119,13 @@ export const CardDetails = () => {
         )
     }, [basePackId])
     
-    const handleOptionChange = (option, action, listId) => {
+    const handleOptionChange = (option, action, listId, resetSearch) => {
         // FilterMenu1
         if (listId === 1) {
             if (action === 'add' && !selectedOptions1.includes(option)) {
                 setSelectedOptions1([...selectedOptions1, option]);
-            } else if (action === 'remove') {
+            } 
+            else if (action === 'remove') {
                 setSelectedOptions1(selectedOptions1.filter(item => item !== option));
             }
         }
@@ -168,10 +134,14 @@ export const CardDetails = () => {
         else if (listId === 2) {
             if (action === 'add' && !selectedOptions2.includes(option)) {
                 setSelectedOptions2([...selectedOptions2, option]);
-            } else if (action === 'remove') {
+            } 
+            else if (action === 'remove') {
                 setSelectedOptions2(selectedOptions2.filter(item => item !== option));
             }
         }
+
+        // reset the search input 
+        if (resetSearch) resetSearch("")
     };
 
     // reset the card data when user applies a filter
@@ -181,6 +151,13 @@ export const CardDetails = () => {
             setPage(1)
             setContentAvailable(true)
         }
+
+        else if (selectedOptions1.length === 0 && selectedOptions2.length === 0) { 
+            setCardData([]);
+            setPage(1)
+            setContentAvailable(true)
+        }
+
     }, [selectedOptions1, selectedOptions2, searchTerm])
 
     useEffect(() => {
@@ -211,41 +188,27 @@ export const CardDetails = () => {
     // passes the value into the search-term variable 
     const handleSearch = (term) => {
         setSearchTerm(term)
-        debouncedFetchSuggestions(term)
+        // debouncedFetchSuggestions(term)
     }
 
     return ( 
         <div className='parent-ctn'>
             <div className="search-and-filter">
-                <SearchBar onSearch={handleSearch} /> 
-
-                {showSuggestions && (
-                    <div className="search-suggestions">
-                        {searchResults.length > 0 ? (
-                            searchResults.map((result, index) => (
-                                <div
-                                    key={index}
-                                    className="suggestion-item"
-                                    // onClick={() => handleSuggestionClick(result)}
-                                >
-                                    {result}
-                                </div>
-                            ))
-                        ) : (
-                            <p className="no-suggestions"> No suggestions </p>
-                        )}
-                    </div>
-                )}
+                <SearchBar 
+                    value={searchTerm}
+                    onSearch={handleSearch} 
+                    onInputChange={setSearchTerm}
+                /> 
 
                 <FilterMenu
                     optionList={optionList1}
                     selectedOptions={selectedOptions1}
-                    onOptionChange={(option, action) => handleOptionChange(option, action, 1)}
+                    onOptionChange={(option, action) => handleOptionChange(option, action, 1, setSearchTerm)}
                 />
                 <FilterMenu
                     optionList={optionList2}
                     selectedOptions={selectedOptions2}
-                    onOptionChange={(option, action) => handleOptionChange(option, action, 2)}
+                    onOptionChange={(option, action) => handleOptionChange(option, action, 2, setSearchTerm)}
                 />                                                                
             </div>
 
