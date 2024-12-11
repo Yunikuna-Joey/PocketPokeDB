@@ -78,6 +78,20 @@ export const CardDetails = () => {
         }
     }, [selectedOptions1, selectedOptions2, basePackId, page])
 
+    const fetchSearchFilterData = useCallback(async () => { 
+        try { 
+            const response = await fetch(`/requestSearchFilterData/${basePackId}?pokemonCover=${selectedOptions1}&rarity=${selectedOptions2}&term=${searchTerm}`)
+            const data = await response.json()
+
+            setContentAvailable(data.length > 0)
+            setCardData(data)
+        }
+
+        catch(error) {
+            console.error("[fetchSearchFilterData]- Error fetching filtered data: ", error)
+        }
+    }, [basePackId, selectedOptions1, selectedOptions2, searchTerm])
+
     //* Utilize IntersectionObserver to load more content when last element in DOM is visible
     const lastCardReference = useCallback(
         (node) => { 
@@ -144,36 +158,32 @@ export const CardDetails = () => {
         if (resetSearch) resetSearch("")
     };
 
-    // reset the card data when user applies a filter
+    //* Delay implementation 
     useEffect(() => {
-        if (selectedOptions1.length > 0 || selectedOptions2.length > 0 || searchTerm) {
-            setCardData([]);
-            setPage(1)
-            setContentAvailable(true)
-        }
-
-        else if (selectedOptions1.length === 0 && selectedOptions2.length === 0) { 
-            setCardData([]);
-            setPage(1)
-            setContentAvailable(true)
-        }
-
+        // Reset states
+        setCardData([])
+        setPage(1)
+        setContentAvailable(true)
+    
+        // Debounce logic to prevent flooding
+        const handler = setTimeout(() => {
+            if (searchTerm && (selectedOptions1.length > 0 || selectedOptions2.length > 0)) {
+                fetchSearchFilterData()
+            } 
+            else if (selectedOptions1.length > 0 || selectedOptions2.length > 0) {
+                fetchFilteredData()
+            } 
+            else if (searchTerm) {
+                fetchSearchData()
+            } 
+            else {
+                fetchCardData()
+            }
+        }, 500);  // 500ms delay
+    
+        // Cleanup function to cancel timeout
+        return () => clearTimeout(handler);
     }, [selectedOptions1, selectedOptions2, searchTerm])
-
-    useEffect(() => {
-        // We invoke the filtered fetch function when there are filters applied 
-        if (selectedOptions1.length > 0 || selectedOptions2.length > 0) {
-            fetchFilteredData()
-        }
-        // otherwise fetch normal function 
-        else if (searchTerm) { 
-            fetchSearchData()
-        }
-
-        else { 
-            fetchCardData();
-        }
-    }, [selectedOptions1, selectedOptions2, searchTerm, fetchSearchData, fetchCardData, fetchFilteredData]);
 
 
     useEffect(() => { 
@@ -188,7 +198,6 @@ export const CardDetails = () => {
     // passes the value into the search-term variable 
     const handleSearch = (term) => {
         setSearchTerm(term)
-        // debouncedFetchSuggestions(term)
     }
 
     return ( 
@@ -247,12 +256,10 @@ export const CardDetails = () => {
                         >
                             <h3>{card.name}</h3>
                             <img src={card.coverArt} className="card-image" alt={card.name} loading="lazy" />
-                            <p>Rarity: {card.rarity}</p>
-                            <p>Hit Points: {card.hitPoints}</p>
                         </div>
                     ))
                 ) : (
-                    <p>Loading...</p>
+                    <p>No Results</p>
                 )}
             </div>
 
