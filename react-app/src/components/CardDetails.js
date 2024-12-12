@@ -164,7 +164,7 @@ export const CardDetails = () => {
         setCardData([])
         setPage(1)
         setContentAvailable(true)
-    
+        
         // Debounce logic to prevent flooding
         const handler = setTimeout(() => {
             if (searchTerm && (selectedOptions1.length > 0 || selectedOptions2.length > 0)) {
@@ -185,6 +185,8 @@ export const CardDetails = () => {
         return () => clearTimeout(handler);
     }, [selectedOptions1, selectedOptions2, searchTerm])
 
+    //* Potential full depdendency array 
+    // [selectedOptions1, selectedOptions2, searchTerm, fetchCardData, fetchFilteredData, fetchSearchData, fetchSearchFilterData]
 
     useEffect(() => { 
         if (searchTerm) { 
