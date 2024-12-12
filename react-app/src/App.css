@@ -1,7 +1,8 @@
 /* Applies to everything on the page */
 .App { 
   display: flex;
-  font-family: sans-serif;
+  /* font-family: sans-serif; */
+  font-family: Anuphan;
   height: 100vh;
   width: 100vw;
 }
@@ -30,6 +31,7 @@ body, html {
 .sideMenu h2 { 
   color: white; 
   text-align: center;
+  margin-bottom: 5rem;
 }
 
 .sideMenu ul { 
@@ -38,6 +40,7 @@ body, html {
   padding: 0;
   width: 250px;
   text-decoration: none;
+  font-size: 20px;
 }
 
 .sideMenu ul li a {
