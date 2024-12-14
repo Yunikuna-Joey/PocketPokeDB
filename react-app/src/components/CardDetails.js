@@ -181,7 +181,7 @@ export const CardDetails = () => {
 
     // This will fetch only filtered data
     useEffect(() => {
-        if (!searchTerm && (selectedOptions1.length > 0 || selectedOptions2.length > 0)) {
+        if (page === 1 && !searchTerm && (selectedOptions1.length > 0 || selectedOptions2.length > 0)) {
             fetchFilteredData();
         }
     }, [fetchFilteredData, selectedOptions1, selectedOptions2, page]);
