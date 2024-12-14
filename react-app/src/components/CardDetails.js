@@ -70,26 +70,33 @@ export const CardDetails = () => {
             const response = await fetch(`/requestFilteredInfo/${basePackId}?pokemonCover=${selectedOptions1}&rarity=${selectedOptions2}&page=${page}&page_size=${pageSize}`)
             const data = await response.json()
 
-            setContentAvailable(data.length === pageSize)
-            setCardData(prevCards => [...prevCards, ...data])
+            // setContentAvailable(data.length === pageSize)
+            // setCardData(prevCards => [...prevCards, ...data])
+
+            setCardData((prevCards) => { 
+                const newCards = data.filter((card) => !prevCards.some((prevCard) => prevCard.id === card.id)); 
+                return [...prevCards, ...newCards];
+            });
         }
         catch(error) { 
             console.error("[fetchFilteredData]- Error fetching filtered data: ", error)
         }
+
     }, [selectedOptions1, selectedOptions2, basePackId, page])
 
-    //* Utilize IntersectionObserver to load more content when last element in DOM is visible
-    const lastCardReference = useCallback(
-        (node) => { 
-            if (observer.current) observer.current.disconnect();
-            observer.current = new IntersectionObserver((entries) => { 
-                if (entries[0].isIntersecting && contentAvailable) {
-                    setPage((prevPage) => prevPage + 1);
-                }
-            });
-            if (node) observer.current.observe(node)
-        }, [contentAvailable]
-    )
+    const fetchSearchFilterData = useCallback(async () => { 
+        try { 
+            const response = await fetch(`/requestSearchFilterData/${basePackId}?pokemonCover=${selectedOptions1}&rarity=${selectedOptions2}&term=${searchTerm}`)
+            const data = await response.json()
+
+            setContentAvailable(data.length > 0)
+            setCardData(data)
+        }
+
+        catch(error) {
+            console.error("[fetchSearchFilterData]- Error fetching filtered data: ", error)
+        }
+    }, [basePackId, selectedOptions1, selectedOptions2, searchTerm])
 
     //* Everything below this will be utilized for creating the filter menu 
     const [optionList1, setOptionList1] = useState([])
@@ -144,37 +151,62 @@ export const CardDetails = () => {
         if (resetSearch) resetSearch("")
     };
 
-    // reset the card data when user applies a filter
-    useEffect(() => {
-        if (selectedOptions1.length > 0 || selectedOptions2.length > 0 || searchTerm) {
-            setCardData([]);
-            setPage(1)
-            setContentAvailable(true)
-        }
+    //* Utilize IntersectionObserver to load more content when last element in DOM is visible
+    const lastCardReference = useCallback(
+        (node) => { 
+            if (observer.current) observer.current.disconnect();
+            observer.current = new IntersectionObserver((entries) => { 
+                if (entries[0].isIntersecting && contentAvailable) {
+                    setPage((prevPage) => prevPage + 1);
+                }
+            });
+            if (node) observer.current.observe(node)
+        }, [contentAvailable]
+    )
 
-        else if (selectedOptions1.length === 0 && selectedOptions2.length === 0) { 
-            setCardData([]);
-            setPage(1)
-            setContentAvailable(true)
-        }
-
+    //* Delay implementation 
+    useEffect(() => {        
+        // Debounce logic to prevent flooding
+        const handler = setTimeout(() => {
+            // if (searchTerm && (selectedOptions1.length > 0 || selectedOptions2.length > 0)) {
+            //     fetchSearchFilterData()
+            // }
+            if (searchTerm) {
+                fetchSearchData()
+            }
+             
+            else if (selectedOptions1.length > 0 || selectedOptions2.length > 0) {
+                fetchFilteredData()
+            }  
+            else {
+                fetchCardData()
+            }
+        }, 500);  // 500ms delay
+    
+        // Cleanup function to cancel timeout
+        return () => clearTimeout(handler);
     }, [selectedOptions1, selectedOptions2, searchTerm])
 
+    //* Effect to handle pagination
     useEffect(() => {
-        // We invoke the filtered fetch function when there are filters applied 
-        if (selectedOptions1.length > 0 || selectedOptions2.length > 0) {
-            fetchFilteredData()
+        if (page > 1) {
+            if (searchTerm && (selectedOptions1.length > 0 || selectedOptions2.length > 0)) {
+                fetchSearchFilterData(); // Load more with search and filters
+            } 
+            else if (selectedOptions1.length > 0 || selectedOptions2.length > 0) {
+                fetchFilteredData(); // Load more with filters only
+            } 
+            else if (searchTerm) {
+                fetchSearchData(); // Load more with search only
+            } 
+            else {
+                fetchCardData(); // Load more without filters or search
+            }
         }
-        // otherwise fetch normal function 
-        else if (searchTerm) { 
-            fetchSearchData()
-        }
+    }, [page, searchTerm, selectedOptions1, selectedOptions2]);
 
-        else { 
-            fetchCardData();
-        }
-    }, [selectedOptions1, selectedOptions2, searchTerm, fetchSearchData, fetchCardData, fetchFilteredData]);
-
+    //* Potential full depdendency array 
+    // [selectedOptions1, selectedOptions2, searchTerm, fetchCardData, fetchFilteredData, fetchSearchData, fetchSearchFilterData]
 
     useEffect(() => { 
         if (searchTerm) { 
@@ -185,10 +217,19 @@ export const CardDetails = () => {
         }
     }, [searchTerm, fetchSearchData])
 
+    useEffect(() => { 
+        if (selectedOptions1.length > 0 || selectedOptions2.length > 0) {
+            setCardData([]);
+            setPage(1)
+            setContentAvailable(true)
+            fetchFilteredData()
+        }
+    }, [selectedOptions1, selectedOptions2, fetchFilteredData])
+
+
     // passes the value into the search-term variable 
     const handleSearch = (term) => {
         setSearchTerm(term)
-        // debouncedFetchSuggestions(term)
     }
 
     return ( 
@@ -247,12 +288,10 @@ export const CardDetails = () => {
                         >
                             <h3>{card.name}</h3>
                             <img src={card.coverArt} className="card-image" alt={card.name} loading="lazy" />
-                            <p>Rarity: {card.rarity}</p>
-                            <p>Hit Points: {card.hitPoints}</p>
                         </div>
                     ))
                 ) : (
-                    <p>Loading...</p>
+                    <p>No Results</p>
                 )}
             </div>
 
