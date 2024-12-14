@@ -70,12 +70,18 @@ export const CardDetails = () => {
             const response = await fetch(`/requestFilteredInfo/${basePackId}?pokemonCover=${selectedOptions1}&rarity=${selectedOptions2}&page=${page}&page_size=${pageSize}`)
             const data = await response.json()
 
-            setContentAvailable(data.length === pageSize)
-            setCardData(prevCards => [...prevCards, ...data])
+            // setContentAvailable(data.length === pageSize)
+            // setCardData(prevCards => [...prevCards, ...data])
+
+            setCardData((prevCards) => { 
+                const newCards = data.filter((card) => !prevCards.some((prevCard) => prevCard.id === card.id)); 
+                return [...prevCards, ...newCards];
+            });
         }
         catch(error) { 
             console.error("[fetchFilteredData]- Error fetching filtered data: ", error)
         }
+
     }, [selectedOptions1, selectedOptions2, basePackId, page])
 
     const fetchSearchFilterData = useCallback(async () => { 
@@ -91,19 +97,6 @@ export const CardDetails = () => {
             console.error("[fetchSearchFilterData]- Error fetching filtered data: ", error)
         }
     }, [basePackId, selectedOptions1, selectedOptions2, searchTerm])
-
-    //* Utilize IntersectionObserver to load more content when last element in DOM is visible
-    const lastCardReference = useCallback(
-        (node) => { 
-            if (observer.current) observer.current.disconnect();
-            observer.current = new IntersectionObserver((entries) => { 
-                if (entries[0].isIntersecting && contentAvailable) {
-                    setPage((prevPage) => prevPage + 1);
-                }
-            });
-            if (node) observer.current.observe(node)
-        }, [contentAvailable]
-    )
 
     //* Everything below this will be utilized for creating the filter menu 
     const [optionList1, setOptionList1] = useState([])
@@ -158,24 +151,33 @@ export const CardDetails = () => {
         if (resetSearch) resetSearch("")
     };
 
+    //* Utilize IntersectionObserver to load more content when last element in DOM is visible
+    const lastCardReference = useCallback(
+        (node) => { 
+            if (observer.current) observer.current.disconnect();
+            observer.current = new IntersectionObserver((entries) => { 
+                if (entries[0].isIntersecting && contentAvailable) {
+                    setPage((prevPage) => prevPage + 1);
+                }
+            });
+            if (node) observer.current.observe(node)
+        }, [contentAvailable]
+    )
+
     //* Delay implementation 
-    useEffect(() => {
-        // Reset states
-        setCardData([])
-        setPage(1)
-        setContentAvailable(true)
-        
+    useEffect(() => {        
         // Debounce logic to prevent flooding
         const handler = setTimeout(() => {
-            if (searchTerm && (selectedOptions1.length > 0 || selectedOptions2.length > 0)) {
-                fetchSearchFilterData()
-            } 
+            // if (searchTerm && (selectedOptions1.length > 0 || selectedOptions2.length > 0)) {
+            //     fetchSearchFilterData()
+            // }
+            if (searchTerm) {
+                fetchSearchData()
+            }
+             
             else if (selectedOptions1.length > 0 || selectedOptions2.length > 0) {
                 fetchFilteredData()
-            } 
-            else if (searchTerm) {
-                fetchSearchData()
-            } 
+            }  
             else {
                 fetchCardData()
             }
@@ -184,6 +186,24 @@ export const CardDetails = () => {
         // Cleanup function to cancel timeout
         return () => clearTimeout(handler);
     }, [selectedOptions1, selectedOptions2, searchTerm])
+
+    //* Effect to handle pagination
+    useEffect(() => {
+        if (page > 1) {
+            if (searchTerm && (selectedOptions1.length > 0 || selectedOptions2.length > 0)) {
+                fetchSearchFilterData(); // Load more with search and filters
+            } 
+            else if (selectedOptions1.length > 0 || selectedOptions2.length > 0) {
+                fetchFilteredData(); // Load more with filters only
+            } 
+            else if (searchTerm) {
+                fetchSearchData(); // Load more with search only
+            } 
+            else {
+                fetchCardData(); // Load more without filters or search
+            }
+        }
+    }, [page, searchTerm, selectedOptions1, selectedOptions2]);
 
     //* Potential full depdendency array 
     // [selectedOptions1, selectedOptions2, searchTerm, fetchCardData, fetchFilteredData, fetchSearchData, fetchSearchFilterData]
@@ -196,6 +216,16 @@ export const CardDetails = () => {
             fetchSearchData()
         }
     }, [searchTerm, fetchSearchData])
+
+    useEffect(() => { 
+        if (selectedOptions1.length > 0 || selectedOptions2.length > 0) {
+            setCardData([]);
+            setPage(1)
+            setContentAvailable(true)
+            fetchFilteredData()
+        }
+    }, [selectedOptions1, selectedOptions2, fetchFilteredData])
+
 
     // passes the value into the search-term variable 
     const handleSearch = (term) => {
