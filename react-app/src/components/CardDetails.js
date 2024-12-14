@@ -164,28 +164,42 @@ export const CardDetails = () => {
         }, [contentAvailable]
     )
 
-    //* Delay implementation 
-    useEffect(() => {        
-        // Debounce logic to prevent flooding
-        const handler = setTimeout(() => {
-            // if (searchTerm && (selectedOptions1.length > 0 || selectedOptions2.length > 0)) {
-            //     fetchSearchFilterData()
-            // }
-            if (searchTerm) {
-                fetchSearchData()
-            }
-             
-            else if (selectedOptions1.length > 0 || selectedOptions2.length > 0) {
-                fetchFilteredData()
-            }  
-            else {
-                fetchCardData()
-            }
-        }, 500);  // 500ms delay
-    
-        // Cleanup function to cancel timeout
-        return () => clearTimeout(handler);
-    }, [selectedOptions1, selectedOptions2, searchTerm])
+    //* Naive implementation, but the behavior is intact
+    // This will reset states as needed
+    useEffect(() => {
+        setCardData([]);       
+        setPage(1);            
+        setContentAvailable(true); 
+    }, [selectedOptions1, selectedOptions2, searchTerm]);
+
+    // This will fetch all of the card data via pages
+    useEffect(() => {
+        if (!searchTerm && selectedOptions1.length === 0 && selectedOptions2.length === 0) {
+            fetchCardData();
+        }
+    }, [fetchCardData, page, searchTerm, selectedOptions1, selectedOptions2]);
+
+    // This will fetch only filtered data
+    useEffect(() => {
+        if (!searchTerm && (selectedOptions1.length > 0 || selectedOptions2.length > 0)) {
+            fetchFilteredData();
+        }
+    }, [fetchFilteredData, selectedOptions1, selectedOptions2, page]);
+
+    // This will fetch data when there is a search term and filtered data
+    useEffect(() => {
+        if (searchTerm && (selectedOptions1.length > 0 || selectedOptions2.length > 0)) {
+            fetchSearchFilterData();
+        }
+    }, [fetchSearchFilterData, searchTerm, selectedOptions1, selectedOptions2]);
+
+    // This will fetch data when there is only a search term
+    useEffect(() => {
+        if (searchTerm && selectedOptions1.length === 0 && selectedOptions2.length === 0) {
+            fetchSearchData();
+        }
+    }, [fetchSearchData, searchTerm]);
+
 
     //* Effect to handle pagination
     useEffect(() => {
@@ -203,29 +217,10 @@ export const CardDetails = () => {
                 fetchCardData(); // Load more without filters or search
             }
         }
-    }, [page, searchTerm, selectedOptions1, selectedOptions2]);
+    }, [page]);
 
     //* Potential full depdendency array 
     // [selectedOptions1, selectedOptions2, searchTerm, fetchCardData, fetchFilteredData, fetchSearchData, fetchSearchFilterData]
-
-    useEffect(() => { 
-        if (searchTerm) { 
-            setCardData([]);
-            setPage(1)
-            setContentAvailable(true)
-            fetchSearchData()
-        }
-    }, [searchTerm, fetchSearchData])
-
-    useEffect(() => { 
-        if (selectedOptions1.length > 0 || selectedOptions2.length > 0) {
-            setCardData([]);
-            setPage(1)
-            setContentAvailable(true)
-            fetchFilteredData()
-        }
-    }, [selectedOptions1, selectedOptions2, fetchFilteredData])
-
 
     // passes the value into the search-term variable 
     const handleSearch = (term) => {
